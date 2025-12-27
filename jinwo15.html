@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>진우의 학교</title>
+<style>
+body {
+  margin: 0;
+  overflow: hidden;
+  background: linear-gradient(to bottom, #9fd3ff 0%, #ffffff 80%);
+  font-family: "맑은 고딕", sans-serif;
+}
+#school {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: url('https://cdn.pixabay.com/photo/2016/03/26/22/13/classroom-1284259_1280.jpg') center/cover no-repeat;
+}
+#jinwoo {
+  position: absolute;
+  bottom: 50px;
+  left: 100px;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: #00aaff;
+  box-shadow: 0 0 10px #00aaff;
+}
+#smallman {
+  position: absolute;
+  bottom: 45px;
+  right: 120px;
+  width: 120px; /* 살짝 크게 */
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+#dialogue {
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 550px;
+  height: 90px;
+  border: 3px solid black;
+  background: rgba(255,255,255,0.95);
+  color: black;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+  border-radius: 12px;
+  text-align: center;
+  line-height: 1.8rem;
+}
+#choices {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  gap: 20px;
+}
+.choice-btn {
+  background: white;
+  border: 3px solid black;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.choice-btn:hover {
+  background: black;
+  color: white;
+}
+</style>
+</head>
+<body>
+<div id="school">
+  <div id="jinwoo"></div>
+  <img id="smallman" src="smallman.jpg" alt="작은 남자">
+  <div id="dialogue">...</div>
+  <div id="choices">
+    <button class="choice-btn" id="yes">응, 너무 작은데?</button>
+    <button class="choice-btn" id="titan">진격거인가?</button>
+  </div>
+</div>
+
+<script>
+const jinwoo = document.getElementById("jinwoo");
+const smallman = document.getElementById("smallman");
+const dialogue = document.getElementById("dialogue");
+const choices = document.getElementById("choices");
+const yesBtn = document.getElementById("yes");
+const titanBtn = document.getElementById("titan");
+
+let x = 100;
+let y = 50;
+const speed = 10;
+let interacted = false;
+
+function moveJinwoo() {
+  jinwoo.style.left = x + "px";
+  jinwoo.style.bottom = y + "px";
+}
+
+function checkCollision() {
+  const jRect = jinwoo.getBoundingClientRect();
+  const sRect = smallman.getBoundingClientRect();
+
+  if (
+    jRect.right > sRect.left &&
+    jRect.left < sRect.right &&
+    jRect.bottom > sRect.top &&
+    jRect.top < sRect.bottom &&
+    !interacted
+  ) {
+    interacted = true;
+    triggerDialogue();
+  }
+}
+
+function triggerDialogue() {
+  dialogue.style.visibility = "visible";
+  dialogue.textContent = "작은남자: 야, 키 작다고 무시하냐?";
+  setTimeout(() => {
+    choices.style.display = "flex";
+  }, 1200);
+}
+
+// 🧭 이동 키 (WASD)
+window.addEventListener("keydown", (e) => {
+  e.preventDefault();
+  switch (e.key.toLowerCase()) {
+    case "w": y += speed; break;
+    case "s": y -= speed; break;
+    case "a": x -= speed; break;
+    case "d": x += speed; break;
+  }
+  x = Math.max(0, Math.min(window.innerWidth - 60, x));
+  y = Math.max(0, Math.min(window.innerHeight - 120, y));
+  moveJinwoo();
+  checkCollision();
+});
+
+// 선택지 클릭 이벤트
+yesBtn.addEventListener("click", () => {
+  dialogue.textContent = "작은남자: 뭐라고?! 😠";
+  choices.style.display = "none";
+  setTimeout(() => {
+    window.location.href = "jinwo16.html";
+  }, 2000);
+});
+
+titanBtn.addEventListener("click", () => {
+  dialogue.textContent = "작은남자: 내가 좀 크지 ㅎㅎㅎ 😎";
+  choices.style.display = "none";
+  setTimeout(() => {
+    window.location.href = "board.html";
+  }, 2500);
+});
+
+moveJinwoo();
+</script>
+</body>
+</html>

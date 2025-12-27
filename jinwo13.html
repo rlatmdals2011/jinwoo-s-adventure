@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>진우 vs 햄버거보스</title>
+<style>
+body {
+  margin: 0;
+  background: #000;
+  color: white;
+  font-family: "Courier New", monospace;
+  overflow: hidden;
+}
+#battle-box {
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 250px;
+  border: 3px solid white;
+  background: #111;
+  overflow: hidden;
+}
+#jinwoo {
+  position: absolute;
+  bottom: 30px;
+  left: 280px;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #00aaff;
+}
+#boss {
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px;
+  border-radius: 10px;
+  box-shadow: 0 0 30px rgba(255, 0, 0, 0.6);
+}
+.burger {
+  position: absolute;
+  font-size: 2.5rem;
+  transition: transform 0.05s linear;
+}
+#hp, #boss-hp {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+#hp { bottom: 380px; color: #ff5555; }
+#boss-hp { top: 10px; color: #ffa500; }
+#attack-btn {
+  position: absolute;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ff4040;
+  border: 3px solid white;
+  color: white;
+  padding: 15px 30px;
+  font-size: 1.3rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.2s;
+  display: none;
+}
+#attack-btn:hover { background: white; color: #ff4040; }
+#dialogue {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 100px;
+  border: 3px solid white;
+  background: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+</style>
+</head>
+<body>
+<img id="boss" src="rotoRl.jpg" alt="햄버거보스" />
+<div id="boss-hp">보스 HP: 1000</div>
+<div id="hp">❤️❤️❤️</div>
+<div id="battle-box">
+  <div id="jinwoo"></div>
+</div>
+<button id="attack-btn">⚔ 공격</button>
+<div id="dialogue">보스가 햄버거를 던진다!</div>
+
+<script>
+const battleBox = document.getElementById("battle-box");
+const jinwoo = document.getElementById("jinwoo");
+const dialogue = document.getElementById("dialogue");
+const hpDisplay = document.getElementById("hp");
+const bossHpDisplay = document.getElementById("boss-hp");
+const attackBtn = document.getElementById("attack-btn");
+
+let jinwooHp = 3;
+let bossHp = 1000;
+let burgerCount = 0;
+let inAttackPhase = false;
+
+// ⚙️ jinwo11에서 저장된 직업 스탯 불러오기
+let job = localStorage.getItem("jinwooJob") || "복서";
+let attackPower = Number(localStorage.getItem("jinwooAtk")) || 100;
+let maxHp = Number(localStorage.getItem("jinwooHp")) || 3;
+jinwooHp = maxHp;
+
+// 직업별 색상
+const colorMap = { 복서: "#00aaff", "진화한 샌드백": "#ffaa00", 네크로맨서: "#b300ff" };
+jinwoo.style.background = colorMap[job] || "#00aaff";
+
+// 🩸 체력 표시
+function updateHp() {
+  hpDisplay.textContent = "❤️".repeat(jinwooHp);
+}
+
+// 🍔 햄버거 생성 (부드럽게 움직임)
+function throwBurger() {
+  const burger = document.createElement("div");
+  burger.className = "burger";
+  burger.textContent = "🍔";
+  battleBox.appendChild(burger);
+
+  let startX = Math.random() * 550;
+  let startY = 250;
+  let targetX = parseFloat(jinwoo.style.left) + 20;
+  let targetY = parseFloat(jinwoo.style.bottom) + 20;
+
+  const dx = targetX - startX;
+  const dy = targetY - startY;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  const vx = (dx / dist) * 2.5; // 더 느리고 부드럽게!
+  const vy = (dy / dist) * 2.5;
+
+  burger.style.left = startX + "px";
+  burger.style.bottom = startY + "px";
+
+  function moveBurger() {
+    startX += vx;
+    startY += vy;
+    burger.style.left = startX + "px";
+    burger.style.bottom = startY + "px";
+
+    const bRect = burger.getBoundingClientRect();
+    const jRect = jinwoo.getBoundingClientRect();
+
+    // 충돌 감지
+    if (
+      bRect.right > jRect.left &&
+      bRect.left < jRect.right &&
+      bRect.bottom > jRect.top &&
+      bRect.top < jRect.bottom
+    ) {
+      burger.remove();
+      hitJinwoo();
+      return;
+    }
+
+    // 화면 밖 제거
+    if (startY < -50 || startX < -50 || startX > 650) {
+      burger.remove();
+      return;
+    }
+
+    requestAnimationFrame(moveBurger);
+  }
+
+  requestAnimationFrame(moveBurger);
+}
+
+// ❤️ 피격 처리
+function hitJinwoo() {
+  jinwooHp--;
+  updateHp();
+  dialogue.textContent = "진우가 햄버거에 맞았다! 🍔😣";
+
+  if (jinwooHp <= 0) {
+    dialogue.textContent = "진우는 쓰러졌다...";
+    setTimeout(() => (window.location.href = "board.html"), 3000);
+  }
+}
+
+// ⚔ 공격 버튼
+attackBtn.addEventListener("click", () => {
+  if (!inAttackPhase) return;
+  bossHp -= attackPower;
+  bossHpDisplay.textContent = "보스 HP: " + bossHp;
+  dialogue.textContent = `진우의 공격! 💥 (${attackPower} 데미지)`;
+  attackBtn.style.display = "none";
+  inAttackPhase = false;
+  burgerCount = 0;
+
+  if (bossHp <= 0) {
+    dialogue.textContent = "보스를 쓰러뜨렸다! 🏆";
+    setTimeout(() => (window.location.href = "jinwo14.html"), 3000);
+  } else {
+    setTimeout(() => {
+      dialogue.textContent = "보스가 다시 햄버거를 던진다!";
+      startBurgerPhase();
+    }, 2000);
+  }
+});
+
+// 🔁 햄버거 5개 던지는 패턴
+function startBurgerPhase() {
+  let interval = setInterval(() => {
+    if (burgerCount >= 5 || jinwooHp <= 0) {
+      clearInterval(interval);
+      if (jinwooHp > 0) {
+        dialogue.textContent = "공격할 기회다!";
+        attackBtn.style.display = "block";
+        inAttackPhase = true;
+      }
+    } else {
+      throwBurger();
+      burgerCount++;
+    }
+  }, 1500);
+}
+
+// 💡 WASD 이동
+let x = 280, y = 30;
+document.addEventListener("keydown", (e) => {
+  if (e.key === "w") y += 10;
+  if (e.key === "s") y -= 10;
+  if (e.key === "a") x -= 10;
+  if (e.key === "d") x += 10;
+  x = Math.max(0, Math.min(560, x));
+  y = Math.max(0, Math.min(190, y));
+  jinwoo.style.left = x + "px";
+  jinwoo.style.bottom = y + "px";
+});
+
+updateHp();
+startBurgerPhase();
+</script>
+</body>
+</html>

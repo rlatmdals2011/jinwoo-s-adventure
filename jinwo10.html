@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>진우의 부활</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      color: white;
+      font-family: "맑은 고딕", sans-serif;
+      overflow: hidden;
+    }
+
+    #scene {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    #text {
+      font-size: 1.6rem;
+      opacity: 0;
+      transition: opacity 2s;
+    }
+
+    #mentor {
+      width: 200px;
+      height: auto;
+      margin-top: 50px;
+      opacity: 0;
+      transition: opacity 2s;
+      border-radius: 10px;
+      box-shadow: 0 0 40px rgba(0, 255, 255, 0.6);
+    }
+
+    #line {
+      margin-top: 20px;
+      font-size: 1.4rem;
+      color: #aafaff;
+      opacity: 0;
+      transition: opacity 2s;
+    }
+
+    .choice-box {
+      margin-top: 30px;
+      display: none;
+      z-index: 10;
+      position: relative;
+    }
+
+    .choice {
+      background: #00aaff;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      margin: 0 15px;
+      transition: 0.3s;
+    }
+
+    .choice:hover {
+      background: white;
+      color: #00aaff;
+    }
+
+    #fade {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: black;
+      opacity: 0;
+      transition: opacity 3s;
+      z-index: 5;
+      pointer-events: none; /* ✨ 클릭 차단 방지 */
+    }
+  </style>
+</head>
+<body>
+  <div id="scene">
+    <div id="text">...내가... 쓰러졌다...</div>
+    <img id="mentor" src="qudtls.jpg" alt="수수께끼의 인물" />
+    <div id="line">너... 강해지고 싶나?</div>
+
+    <div class="choice-box" id="choices">
+      <button class="choice" onclick="chooseYes()">좋아</button>
+      <button class="choice" onclick="chooseNo()">싫어</button>
+    </div>
+
+    <div id="fade"></div>
+  </div>
+
+  <audio
+    id="bgm"
+    src="https://cdn.pixabay.com/download/audio/2023/03/30/audio_f5f829ca38.mp3?filename=mystery-dark-ambient-144274.mp3"
+    loop
+  ></audio>
+
+  <script>
+    const text = document.getElementById("text");
+    const mentor = document.getElementById("mentor");
+    const line = document.getElementById("line");
+    const choices = document.getElementById("choices");
+    const fade = document.getElementById("fade");
+    const bgm = document.getElementById("bgm");
+
+    bgm.volume = 0.4;
+    bgm.play();
+
+    // 🕒 순서대로 연출
+    setTimeout(() => (text.style.opacity = 1), 1000); // “...내가... 쓰러졌다...”
+    setTimeout(() => (mentor.style.opacity = 1), 4000); // 인물 등장
+    setTimeout(() => (line.style.opacity = 1), 7000); // 대사 등장
+    setTimeout(() => (choices.style.display = "block"), 9000); // 선택지 표시
+
+    // ✅ 선택지 클릭 이벤트
+    function chooseYes() {
+      fade.style.pointerEvents = "auto"; // 어둡게 덮기 시작
+      fade.style.opacity = 1;
+      line.textContent = "좋다... 따라오너라.";
+      choices.style.display = "none";
+      setTimeout(() => {
+        window.location.href = "jinwo11.html";
+      }, 3000);
+    }
+
+    function chooseNo() {
+      line.textContent = "그래... 꺼져라.";
+      choices.style.display = "none";
+      setTimeout(() => {
+        fade.style.pointerEvents = "auto";
+        fade.style.opacity = 1;
+      }, 1500);
+      setTimeout(() => {
+        window.location.href = "board.html";
+      }, 4000);
+    }
+  </script>
+</body>
+</html>

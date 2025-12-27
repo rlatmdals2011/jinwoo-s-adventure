@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>진우의 시험날</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: linear-gradient(to bottom, #eaf6ff 0%, #ffffff 100%);
+      font-family: 'Arial', sans-serif;
+    }
+
+    /* 🏫 교실 */
+    #classroom {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(to bottom, #cfe2ff 0%, #f7fbff 60%, #ffffff 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    #teacher {
+      font-size: 80px;
+      margin-bottom: 20px;
+    }
+
+    #dialogue {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #004c70;
+      margin-bottom: 30px;
+    }
+
+    #quiz-box {
+      background: rgba(255,255,255,0.95);
+      border: 3px solid #0077b6;
+      border-radius: 12px;
+      padding: 25px 40px;
+      width: 70%;
+      max-width: 400px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    }
+
+    #question {
+      font-size: 1.2rem;
+      color: #003049;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .choice {
+      background: #0077b6;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 5px;
+      transition: background 0.2s;
+    }
+    .choice:hover {
+      background: #0096c7;
+    }
+
+    #result {
+      margin-top: 15px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    /* 🎉 정답 이미지 */
+    #correct-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s;
+      z-index: 10;
+    }
+
+    #correct-img img {
+      width: 60vw;
+      max-width: 600px;
+      border-radius: 15px;
+      box-shadow: 0 0 30px rgba(255,255,255,0.8);
+    }
+
+    /* 🔁 재시험 버튼 */
+    #retry-btn {
+      display: none;
+      margin-top: 25px;
+      background: #ff595e;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 18px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    #retry-btn:hover {
+      background: #ff7b80;
+    }
+  </style>
+</head>
+<body>
+  <div id="classroom">
+    <div id="teacher">👨‍🏫</div>
+    <div id="dialogue">오늘은 시험날이다!</div>
+
+    <div id="quiz-box">
+      <div id="question"></div>
+      <div id="choices"></div>
+      <div id="result"></div>
+      <button id="retry-btn" onclick="window.location.reload()">🔁 재시험 보기</button>
+    </div>
+
+    <div id="correct-img">
+      <img src="6122.jpg" alt="정답 축하 이미지">
+    </div>
+  </div>
+
+  <audio id="bgm" src="https://cdn.pixabay.com/download/audio/2022/10/25/audio_7b7ddc4b65.mp3?filename=light-happy-day-12246.mp3" loop></audio>
+
+  <script>
+    const questionEl = document.getElementById("question");
+    const choicesEl = document.getElementById("choices");
+    const resultEl = document.getElementById("result");
+    const correctImg = document.getElementById("correct-img");
+    const retryBtn = document.getElementById("retry-btn");
+    const bgm = document.getElementById("bgm");
+
+    bgm.volume = 0.5;
+    bgm.play();
+
+    // 문제 세트
+    const quizData = [
+      { q: "1 + 1 = ?", a: "창문", options: ["1", "2", "창문"] },
+      { q: "3 + 2 = ?", a: "5", options: ["4", "5", "6"] },
+      { q: "진우의 별명은?", a: "전설의 잘생긴 미남", options: ["뚱보", "전설의 잘생긴 미남", "진우는 몰라요"] },
+      { q: "진우의 옷 색깔은?", a: "파란색", options: ["빨간색", "파란색", "노란색"] },
+      { q: "마지막 문제! 진우는 누구인가?", a: "세상에서 가장 소중한 사람", options: ["학생", "천재", "세상에서 가장 소중한 사람"] }
+    ];
+
+    let current = 0;
+    let failed = false; // ❌ 한 번이라도 틀리면 true
+
+    function showQuestion() {
+      if (current >= quizData.length) {
+        if (failed) {
+          questionEl.textContent = "진우는 재시험 대상입니다 😅";
+          retryBtn.style.display = "inline-block";
+        } else {
+          questionEl.textContent = "진우의 시험은 끝났다! 🎓";
+          setTimeout(() => {
+        window.location.href = "jinwo7.html";
+      }, 2000);
+        }
+        choicesEl.innerHTML = "";
+        resultEl.style.opacity = 0;
+        return;
+      }
+
+      const q = quizData[current];
+      questionEl.textContent = "Q" + (current + 1) + ". " + q.q;
+      choicesEl.innerHTML = "";
+
+      q.options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.className = "choice";
+        btn.textContent = opt;
+        btn.onclick = () => checkAnswer(opt);
+        choicesEl.appendChild(btn);
+      });
+
+      resultEl.style.opacity = 0;
+    }
+
+    function checkAnswer(answer) {
+      const q = quizData[current];
+      if (answer === q.a) {
+        resultEl.textContent = "정답이에요! 💯";
+        resultEl.style.color = "#0077b6";
+        resultEl.style.opacity = 1;
+
+        correctImg.style.opacity = 1;
+        correctImg.style.pointerEvents = "auto";
+
+        setTimeout(() => {
+          correctImg.style.opacity = 0;
+          correctImg.style.pointerEvents = "none";
+          current++;
+          showQuestion();
+        }, 2000);
+      } else {
+        failed = true; // ❌ 오답 기록
+        resultEl.textContent = "틀렸어요! 다음 문제로 넘어갑니다... 😅";
+        resultEl.style.color = "#d62828";
+        resultEl.style.opacity = 1;
+        setTimeout(() => {
+          current++;
+          showQuestion();
+        }, 1500);
+      }
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>

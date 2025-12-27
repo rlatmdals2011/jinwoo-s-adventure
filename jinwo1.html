@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>진우의 모험 - 비밀번호 입력</title>
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at center, #000000 20%, #111111 100%);
+  color: white;
+  font-family: "Courier New", monospace;
+}
+h1 {
+  font-size: 2rem;
+  margin-bottom: 40px;
+  text-shadow: 0 0 20px #00ccff;
+}
+#container {
+  background: rgba(20, 20, 30, 0.9);
+  border: 2px solid #00ccff;
+  border-radius: 15px;
+  padding: 40px;
+  box-shadow: 0 0 30px #00ccff;
+  text-align: center;
+}
+input {
+  font-size: 1.2rem;
+  padding: 10px 15px;
+  border: 2px solid #00ccff;
+  border-radius: 8px;
+  outline: none;
+  background: black;
+  color: white;
+  width: 220px;
+  text-align: center;
+}
+input:focus {
+  border-color: #00ffff;
+  box-shadow: 0 0 10px #00ffff;
+}
+button {
+  margin-top: 20px;
+  padding: 10px 25px;
+  font-size: 1.1rem;
+  background: #00ccff;
+  color: black;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+button:hover {
+  background: #00ffff;
+}
+#message {
+  margin-top: 20px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  height: 24px;
+}
+</style>
+</head>
+<body>
+  <div id="container">
+    <h1>🔐 비밀번호를 입력하시오</h1>
+    <input type="password" id="password" placeholder="비밀번호 8자리" maxlength="8">
+    <br>
+    <button onclick="checkPassword()">확인</button>
+    <div id="message"></div>
+  </div>
+
+<script>
+function checkPassword() {
+  const input = document.getElementById("password").value.trim();
+  const msg = document.getElementById("message");
+
+  if (input === "05131026") {
+    msg.style.color = "#00ff66";
+    msg.textContent = "✅ 정답! 게임 실행 중...";
+    setTimeout(() => {
+      window.location.href = "jinwo2.html";
+    }, 2000);
+  } else {
+    msg.style.color = "#ff3333";
+    msg.textContent = "❌ 틀림!";
+  }
+}
+
+// 엔터키 입력
+document.getElementById("password").addEventListener("keypress", function(e) {
+  if (e.key === "Enter") {
+    checkPassword();
+  }
+});
+</script>
+</body>
+</html>

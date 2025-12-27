@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>진우의 복도</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: 'Arial', sans-serif;
+    }
+
+    /* 🏥 복도 배경 */
+    #game-area {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(to bottom, #d4f1ff 0%, #b3e6ff 60%, #89cff0 100%);
+      border-top: 10px solid #a3d9ff;
+      border-bottom: 10px solid #a3d9ff;
+      overflow: hidden;
+    }
+
+    /* 👕 파란 옷을 입은 진우 */
+    #jinwoo {
+      position: absolute;
+      bottom: 15%;
+      left: 10%;
+      width: 45px;
+      height: 55px;
+      background: #4da3ff;
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(50, 150, 255, 0.8);
+      transition: left 0.05s linear;
+    }
+
+    /* 🚪 출구 문 */
+    #door {
+      position: absolute;
+      right: 5%;
+      bottom: 10%;
+      width: 80px;
+      height: 150px;
+      background: linear-gradient(to bottom, #004c70, #003b5c);
+      border: 4px solid #ffffff;
+      border-radius: 6px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+
+    /* 💬 텍스트 */
+    #text {
+      position: absolute;
+      top: 10%;
+      width: 100%;
+      text-align: center;
+      color: #004c70;
+      font-size: 1.2rem;
+      font-weight: bold;
+      opacity: 0;
+      animation: textFade 4s ease-in-out 1s forwards;
+    }
+
+    /* 🌈 페이드 아웃 */
+    #fadeout {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 2s;
+    }
+
+    @keyframes textFade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* 바닥 그림자 느낌 */
+    #floor-shadow {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 40px;
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    /* 문에 닿았을 때 나타나는 메시지 */
+    #message {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255,255,255,0.9);
+      color: #004c70;
+      border: 2px solid #0077b6;
+      border-radius: 10px;
+      padding: 20px 30px;
+      font-weight: bold;
+      font-size: 1.3rem;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.5s;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <div id="game-area">
+    <div id="text">진우는 병원의 복도를 걷고 있다... (A/D로 이동)</div>
+    <div id="jinwoo"></div>
+    <div id="door"></div>
+    <div id="floor-shadow"></div>
+    <div id="fadeout"></div>
+    <div id="message">진우는 세상에서 가장 소중한 사람 1명이 되었다.</div>
+  </div>
+
+  <!-- 🎵 배경음악 -->
+  <audio id="bgm" src="https://cdn.pixabay.com/download/audio/2023/03/23/audio_62e1cc5e55.mp3?filename=soft-piano-melody-14483.mp3" loop></audio>
+
+  <script>
+    const jinwoo = document.getElementById("jinwoo");
+    const door = document.getElementById("door");
+    const fadeout = document.getElementById("fadeout");
+    const message = document.getElementById("message");
+    const bgm = document.getElementById("bgm");
+
+    bgm.volume = 0.5;
+    bgm.play();
+
+    let posX = window.innerWidth * 0.1;
+    const speed = 10;
+    const keys = {};
+    let exiting = false;
+
+    document.addEventListener("keydown", e => keys[e.key.toLowerCase()] = true);
+    document.addEventListener("keyup", e => keys[e.key.toLowerCase()] = false);
+
+    function update() {
+      if (exiting) return;
+
+      // 좌우(A/D) 이동만 가능
+      if (keys["a"]) posX -= speed;
+      if (keys["d"]) posX += speed;
+
+      const maxX = window.innerWidth - 45;
+      posX = Math.max(0, Math.min(maxX, posX));
+      jinwoo.style.left = posX + "px";
+
+      // 문과 충돌 감지
+      const doorRect = door.getBoundingClientRect();
+      const jinwooRect = jinwoo.getBoundingClientRect();
+      const dx = (doorRect.left + doorRect.width / 2) - (jinwooRect.left + jinwooRect.width / 2);
+      const dy = (doorRect.top + doorRect.height / 2) - (jinwooRect.top + jinwooRect.height / 2);
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < 80 && !exiting) {
+        exiting = true;
+        message.style.opacity = 1; // 메시지 표시
+        bgm.volume = 0.2;
+
+        setTimeout(() => {
+          fadeout.style.opacity = 1; // 화면 밝아짐
+        }, 2500);
+
+        // 4초 후 다음 장면 이동
+        setTimeout(() => {
+          bgm.pause();
+          window.location.href = "jinwo5.html";
+        }, 4000);
+      }
+
+      requestAnimationFrame(update);
+    }
+
+    update();
+  </script>
+</body>
+</html>

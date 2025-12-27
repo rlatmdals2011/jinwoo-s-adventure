@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>진우의 모험 - 밤하늘 시작화면</title>
+<link rel="stylesheet" href="backboard.css">
+</head>
+<body>
+
+  <!-- 🌟 별 랜덤 생성용 컨테이너 -->
+  <div id="stars"></div>
+
+  <!-- 🌙 달 -->
+  <div class="moon"></div>
+
+  <!-- 🏔️ 산 3겹 -->
+  <div class="mountain"></div>
+  <div class="mountain2"></div>
+  <div class="mountain3"></div>
+
+  <!-- 중앙 콘텐츠 -->
+  <h1>🎮 진우의 모험 🎮</h1>
+  <button id="startBtn">게임 시작</button>
+  <div class="footer">© 2025 케빈샘AI코딩학원 제작</div>
+
+<script>
+// 🌟 랜덤 별 생성
+const starsContainer = document.getElementById("stars");
+for (let i = 0; i < 80; i++) {
+  const star = document.createElement("div");
+  star.classList.add("star");
+  const size = Math.random() * 3 + 1;
+  star.style.width = `${size}px`;
+  star.style.height = `${size}px`;
+  star.style.top = `${Math.random() * 100}%`;
+  star.style.left = `${Math.random() * 100}%`;
+  star.style.animationDelay = `${Math.random() * 3}s`;
+  starsContainer.appendChild(star);
+}
+
+// 🎮 시작 버튼
+document.getElementById("startBtn").addEventListener("click", () => {
+  window.location.href = "jinwo1.html";
+});
+</script>
+
+</body>
+</html>
+

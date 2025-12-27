@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>진우의 첫 결투</title>
+  <style>
+    body {
+      margin: 0;
+      background: radial-gradient(circle at center, #000000 20%, #111111 100%);
+      color: white;
+      font-family: "맑은 고딕", sans-serif;
+      overflow: hidden;
+    }
+
+    #scene {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    #enemy {
+      width: 250px;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 50px rgba(255, 0, 0, 0.6);
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 2s, transform 2s;
+    }
+
+    #dialogue {
+      margin-top: 40px;
+      font-size: 1.5rem;
+      color: #aafaff;
+      opacity: 0;
+      transition: opacity 1s;
+    }
+
+    #fade {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: black;
+      opacity: 0;
+      transition: opacity 2s;
+      z-index: 5;
+    }
+
+    /* 화면 흔들림 효과 */
+    @keyframes shake {
+      0% { transform: translate(2px, 2px) rotate(0deg); }
+      10% { transform: translate(-2px, -3px) rotate(-1deg); }
+      20% { transform: translate(-4px, 0px) rotate(1deg); }
+      30% { transform: translate(4px, 3px) rotate(0deg); }
+      40% { transform: translate(2px, -2px) rotate(1deg); }
+      50% { transform: translate(-2px, 3px) rotate(-1deg); }
+      60% { transform: translate(-4px, 2px) rotate(0deg); }
+      70% { transform: translate(4px, 2px) rotate(-1deg); }
+      80% { transform: translate(-2px, -2px) rotate(1deg); }
+      90% { transform: translate(2px, 3px) rotate(0deg); }
+      100% { transform: translate(2px, -3px) rotate(-1deg); }
+    }
+
+    .shake {
+      animation: shake 0.4s;
+    }
+  </style>
+</head>
+<body>
+  <div id="scene">
+    <img id="enemy" src="rotoRl.jpg" alt="수상한 적">
+    <div id="dialogue">...</div>
+    <div id="fade"></div>
+  </div>
+
+  <audio id="bgm" src="https://cdn.pixabay.com/download/audio/2023/04/06/audio_09a90b4b1f.mp3?filename=battle-drum-epic-146295.mp3" loop></audio>
+
+  <script>
+    const enemy = document.getElementById("enemy");
+    const dialogue = document.getElementById("dialogue");
+    const fade = document.getElementById("fade");
+    const bgm = document.getElementById("bgm");
+
+    bgm.volume = 0.5;
+    bgm.play();
+
+    // 1️⃣ 적 등장
+    setTimeout(() => {
+      enemy.style.opacity = 1;
+      enemy.style.transform = "scale(1)";
+    }, 1000);
+
+    // 2️⃣ 진우 대사
+    setTimeout(() => {
+      dialogue.textContent = "진우: 마음에 안 드는 놈이네...";
+      dialogue.style.opacity = 1;
+    }, 3000);
+
+    // 3️⃣ 화면 흔들림 + 음악 점점 커짐
+    setTimeout(() => {
+      document.body.classList.add("shake");
+      bgm.volume = 0.7;
+    }, 5500);
+
+    // 4️⃣ 다음 전투씬으로 전환
+    setTimeout(() => {
+      fade.style.opacity = 1;
+    }, 7000);
+
+    setTimeout(() => {
+      window.location.href = "jinwo13.html";
+    }, 9500);
+  </script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>동휘의 첫 등장</title>
+<style>
+body {
+  margin: 0;
+  background: black;
+  color: white;
+  font-family: "Courier New", monospace;
+  overflow: hidden;
+}
+#scene {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+#boss {
+  position: absolute;
+  top: 40%;
+  left: 55%;
+  width: 200px;
+  transform: translate(-50%, -50%);
+  opacity: 1;
+  transition: opacity 0.4s;
+}
+#donghui {
+  position: absolute;
+  top: 45%;
+  left: -250px;
+  width: 220px;
+  transform: rotateY(180deg);
+  transition: left 0.5s ease-out;
+}
+#dialogue {
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  background: rgba(0,0,0,0.7);
+  border: 2px solid white;
+  padding: 15px;
+  font-size: 1.2rem;
+  text-align: center;
+  transition: 0.5s;
+}
+#flash, #redflash {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  opacity: 0;
+  pointer-events: none;
+}
+#flash {
+  background: white;
+  transition: opacity 0.15s;
+}
+#redflash {
+  background: rgba(255,0,0,0.4);
+  transition: opacity 0.3s;
+}
+</style>
+</head>
+<body>
+<div id="scene">
+  <img id="boss" src="smallman.jpg" alt="작은남자 보스">
+  <img id="donghui" src="imboss.jpg" alt="동휘">
+  <div id="dialogue">작은남자: 동휘란 놈은...!!!</div>
+  <div id="flash"></div>
+  <div id="redflash"></div>
+</div>
+
+<script>
+const boss = document.getElementById("boss");
+const donghui = document.getElementById("donghui");
+const dialogue = document.getElementById("dialogue");
+const flash = document.getElementById("flash");
+const redflash = document.getElementById("redflash");
+
+// 1️⃣ 붉은 경고 (위험 예고)
+setTimeout(() => {
+  redflash.style.opacity = 1;
+  setTimeout(() => redflash.style.opacity = 0, 300);
+}, 1500);
+
+// 2️⃣ 동휘 돌진
+setTimeout(() => {
+  donghui.style.left = "50%"; // 보스로 빠르게 돌진
+}, 2200);
+
+// 3️⃣ 충돌 + 보스 소멸
+setTimeout(() => {
+  flash.style.opacity = 1;
+  setTimeout(() => flash.style.opacity = 0, 300);
+  boss.style.opacity = 0;
+  dialogue.textContent = "동휘: 넌 너무 떠들었어.";
+}, 3000);
+
+// 4️⃣ 진우 대사
+setTimeout(() => {
+  dialogue.textContent = "진우: 어째서… 너흰 팀 아니야?";
+}, 4800);
+
+// 5️⃣ 동휘 경고
+setTimeout(() => {
+  dialogue.textContent = "동휘: 언성을 높이지 마라.";
+}, 6800);
+
+// 6️⃣ 최종전 선언
+setTimeout(() => {
+  dialogue.textContent = "동휘: 진우… 난 너의 힘을 안다. 그러므로 소멸시켜주마.";
+}, 9000);
+
+// 7️⃣ 붉은빛 확산 → 최종전 이동
+setTimeout(() => {
+  redflash.style.opacity = 1;
+}, 10500);
+
+setTimeout(() => {
+  window.location.href = "jinwo20.html";
+}, 12500);
+</script>
+</body>
+</html>

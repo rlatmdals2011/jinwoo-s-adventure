@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>진우의 첫 움직임</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: radial-gradient(circle at center, #d0f0ff 0%, #001f3f 100%);
+      font-family: 'Arial', sans-serif;
+    }
+
+    #game-area {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* 👶 진우 (작은 아기) */
+    #jinwoo {
+      position: absolute;
+      bottom: 15%;
+      left: 50%;
+      width: 45px;
+      height: 55px;
+      background: #ffb3b3;
+      border-radius: 50%;
+      transform: translate(-50%, 0);
+      box-shadow: 0 0 15px rgba(255, 150, 150, 0.8);
+      animation: wakeUp 2s ease-in-out;
+    }
+
+    /* 👩‍⚕️ 의사 */
+    #doctor {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 80px;
+      text-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+
+    /* 💬 대화창 */
+    #dialogue {
+      position: absolute;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 340px;
+      padding: 15px;
+      background: rgba(255,255,255,0.95);
+      border-radius: 10px;
+      border: 2px solid #0077b6;
+      text-align: center;
+      font-weight: bold;
+      color: #004c70;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 10;
+    }
+
+    /* 네/아니요 버튼 */
+    .choice {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    button {
+      background: #0077b6;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    button:hover {
+      background: #0096c7;
+      transform: scale(1.05);
+    }
+
+    /* 안내 텍스트 */
+    #text {
+      position: absolute;
+      top: 10%;
+      width: 100%;
+      text-align: center;
+      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: bold;
+      opacity: 0;
+      animation: textFade 4s ease-in-out 1s forwards;
+    }
+
+    /* 애니메이션 */
+    @keyframes wakeUp {
+      0% { transform: translate(-50%, 0) scale(0.4); opacity: 0; filter: blur(10px); }
+      50% { transform: translate(-50%, -5px) scale(1.05); opacity: 1; }
+      100% { transform: translate(-50%, 0) scale(1); opacity: 1; filter: blur(0); }
+    }
+
+    @keyframes textFade {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div id="game-area">
+    <div id="doctor">👩‍⚕️</div>
+    <div id="jinwoo"></div>
+    <div id="dialogue"></div>
+    <div id="text">커다란 진우가 움직이기 시작했다... (WASD로 이동)</div>
+  </div>
+
+  <!-- 🎵 배경음악 -->
+  <audio id="bgm" src="https://cdn.pixabay.com/download/audio/2023/08/29/audio_f29f1dd4a3.mp3?filename=soft-atmosphere-ambient-17184.mp3" loop></audio>
+
+  <script>
+    const jinwoo = document.getElementById("jinwoo");
+    const doctor = document.getElementById("doctor");
+    const dialogue = document.getElementById("dialogue");
+    const bgm = document.getElementById("bgm");
+
+    bgm.volume = 0.5;
+    bgm.play();
+
+    let posX = window.innerWidth / 2;
+    let posY = window.innerHeight * 0.8;
+    const speed = 10;
+    const keys = {};
+    let talking = false;
+
+    document.addEventListener("keydown", e => keys[e.key.toLowerCase()] = true);
+    document.addEventListener("keyup", e => keys[e.key.toLowerCase()] = false);
+
+    function update() {
+      if (talking) return; // 대화 중엔 이동 불가
+
+      if (keys["w"]) posY -= speed;
+      if (keys["s"]) posY += speed;
+      if (keys["a"]) posX -= speed;
+      if (keys["d"]) posX += speed;
+
+      const maxX = window.innerWidth - 45;
+      const maxY = window.innerHeight - 55;
+      posX = Math.max(0, Math.min(maxX, posX));
+      posY = Math.max(0, Math.min(maxY, posY));
+
+      jinwoo.style.left = posX + "px";
+      jinwoo.style.top = posY + "px";
+
+      // NPC와 거리 계산
+      const doctorRect = doctor.getBoundingClientRect();
+      const jinwooRect = jinwoo.getBoundingClientRect();
+      const dx = (doctorRect.left + doctorRect.width/2) - (jinwooRect.left + jinwooRect.width/2);
+      const dy = (doctorRect.top + doctorRect.height/2) - (jinwooRect.top + jinwooRect.height/2);
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      // 닿으면 대화창 표시
+      if (distance < 90 && !talking) {
+        talking = true;
+        dialogue.innerHTML = `
+          움직임을 다 익혔나요?
+          <div class="choice">
+            <button id="yes">네</button>
+            <button id="no">아니요</button>
+          </div>
+        `;
+        dialogue.style.opacity = 1;
+
+        document.getElementById("yes").addEventListener("click", () => {
+          dialogue.innerHTML = "좋아요. 이제 다음으로 갑니다...";
+          setTimeout(() => {
+            bgm.pause();
+            window.location.href = "jinwo4.html";
+          }, 2000);
+        });
+
+        document.getElementById("no").addEventListener("click", () => {
+          window.location.reload(); // 페이지 새로고침
+        });
+      }
+
+      requestAnimationFrame(update);
+    }
+
+    update();
+  </script>
+</body>
+</html>

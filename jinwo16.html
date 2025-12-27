@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>키작은 남자 보스전</title>
+<style>
+body {
+  margin: 0;
+  background: black;
+  color: white;
+  overflow: hidden;
+  font-family: "Courier New", monospace;
+}
+#battle-box {
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 250px;
+  border: 3px solid white;
+  background: #111;
+  overflow: hidden;
+}
+#jinwoo {
+  position: absolute;
+  bottom: 40px;
+  left: 280px;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: #00aaff;
+  box-shadow: 0 0 10px #00aaff;
+}
+#boss {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(255, 50, 50, 0.8);
+  transition: filter 0.1s;
+}
+.warning-line {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 0, 0, 0.8);
+  box-shadow: 0 0 15px red;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.attack {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background-image: url("6830.jpg");
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 0 25px red;
+  border-radius: 10px;
+}
+#hp, #boss-hp {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+#hp { bottom: 370px; color: #ff5555; }
+#boss-hp { top: 10px; color: #ffaa00; }
+#dialogue {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 80px;
+  background: #111;
+  border: 3px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+#damage-flash {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+#damage-text {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ff3333;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+}
+#attack-btn {
+  position: absolute;
+  bottom: 130px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 24px;
+  background: #ff4040;
+  border: 3px solid white;
+  color: white;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: none;
+  transition: 0.2s;
+}
+#attack-btn:hover { background: white; color: #ff4040; }
+#rage-text {
+  position: fixed;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  color: red;
+  font-weight: bold;
+  opacity: 0;
+  transition: opacity 0.3s;
+  text-shadow: 0 0 20px red;
+}
+</style>
+</head>
+<body>
+<div id="battle-box">
+  <div id="jinwoo"></div>
+</div>
+<img id="boss" src="smallman.jpg" alt="키작은남자">
+<div id="boss-hp">보스 HP: 1200</div>
+<div id="hp"></div>
+<div id="dialogue">작은남자: 따릉따릉~!</div>
+<div id="damage-flash"></div>
+<div id="damage-text">💔 체력 -1</div>
+<div id="rage-text">넌 내가 봐준 거다... 보여주마 작은놈의 힘을!!!</div>
+<button id="attack-btn">⚔ 공격</button>
+
+<script>
+const battleBox = document.getElementById("battle-box");
+const jinwoo = document.getElementById("jinwoo");
+const dialogue = document.getElementById("dialogue");
+const hpDisplay = document.getElementById("hp");
+const bossHpDisplay = document.getElementById("boss-hp");
+const flash = document.getElementById("damage-flash");
+const dmgText = document.getElementById("damage-text");
+const attackBtn = document.getElementById("attack-btn");
+const bossImg = document.getElementById("boss");
+const rageText = document.getElementById("rage-text");
+
+let bossHp = 1200;
+let attackCount = 0;
+
+// 🔹 직업 불러오기
+let job = localStorage.getItem("jinwooJob") || "복서";
+let jinwooHp = 3;
+let jinwooAtk = 100;
+
+if (job === "샌드백") {
+  jinwooHp = 10;
+  jinwooAtk = 50;
+} else if (job === "네크로맨서") {
+  jinwooHp = 8;
+  jinwooAtk = 100;
+}
+
+updateHp();
+
+// ❤️ 체력 표시
+function updateHp() {
+  hpDisplay.textContent = `❤️ x${jinwooHp}`;
+  bossHpDisplay.textContent = "보스 HP: " + bossHp;
+}
+
+// ⚠️ 경고선 + 1초 후 자전거 발사
+function warnAndAttack() {
+  const yPos = Math.random() * 180 + 20;
+
+  const line = document.createElement("div");
+  line.className = "warning-line";
+  line.style.bottom = yPos + "px";
+  battleBox.appendChild(line);
+  line.style.opacity = "1";
+
+  dialogue.textContent = "작은남자: 따릉따릉~ 경고야!";
+
+  setTimeout(() => {
+    line.style.opacity = "0";
+    shootBicycle(yPos);
+    setTimeout(() => line.remove(), 500);
+  }, 1000);
+}
+
+// 🚴 자전거 1개 발사
+function shootBicycle(yPos) {
+  dialogue.textContent = "작은남자: 따릉따릉!!! 🚴‍♂️";
+
+  let baseSpeed = 8 + (1200 - bossHp) / 150;
+  const attack = document.createElement("div");
+  attack.className = "attack";
+  attack.style.left = "580px";
+  attack.style.bottom = yPos + "px";
+  battleBox.appendChild(attack);
+
+  function moveAttack() {
+    let x = parseFloat(attack.style.left);
+    x -= baseSpeed;
+    attack.style.left = x + "px";
+
+    const aRect = attack.getBoundingClientRect();
+    const jRect = jinwoo.getBoundingClientRect();
+
+    if (
+      aRect.right > jRect.left &&
+      aRect.left < jRect.right &&
+      aRect.bottom > jRect.top &&
+      aRect.top < jRect.bottom
+    ) {
+      attack.remove();
+      hitJinwoo();
+      return;
+    }
+
+    if (x < -80) {
+      attack.remove();
+      return;
+    }
+
+    requestAnimationFrame(moveAttack);
+  }
+
+  requestAnimationFrame(moveAttack);
+
+  attackCount++;
+  if (attackCount >= 3) {
+    attackCount = 0;
+    setTimeout(() => {
+      dialogue.textContent = "공격할 기회다!";
+      attackBtn.style.display = "block";
+    }, 1000);
+  } else {
+    setTimeout(() => {
+      warnAndAttack();
+    }, 1000);
+  }
+}
+
+// ❤️ 맞았을 때
+function hitJinwoo() {
+  jinwooHp--;
+  updateHp();
+  dialogue.textContent = "진우가 따릉따릉에 맞았다! 💥";
+
+  flash.style.opacity = "1";
+  setTimeout(() => (flash.style.opacity = "0"), 200);
+
+  dmgText.style.opacity = "1";
+  dmgText.style.transform = "translate(-50%, -60%) scale(1.1)";
+  setTimeout(() => {
+    dmgText.style.opacity = "0";
+    dmgText.style.transform = "translate(-50%, -50%) scale(1)";
+  }, 800);
+
+  if (jinwooHp <= 0) {
+    dialogue.textContent = "진우는 쓰러졌다...";
+    setTimeout(() => {
+      window.location.href = "board.html";
+    }, 2500);
+  }
+}
+
+// ⚔ 공격 버튼 이벤트
+attackBtn.addEventListener("click", () => {
+  attackBtn.style.display = "none";
+  bossHp -= jinwooAtk;
+  updateHp();
+  dialogue.textContent = `진우의 반격! 💥 (-${jinwooAtk})`;
+
+  if (bossHp <= 0) {
+    bossDefeated();
+  } else {
+    setTimeout(() => {
+      dialogue.textContent = "작은남자: 다시 간다!";
+      warnAndAttack();
+    }, 1000);
+  }
+});
+
+// 💥 보스 패배 연출
+function bossDefeated() {
+  dialogue.textContent = "";
+  let flicker = true;
+
+  const flickerInterval = setInterval(() => {
+    bossImg.style.filter = flicker ? "brightness(3) hue-rotate(0deg)" : "brightness(0.2)";
+    flicker = !flicker;
+  }, 150);
+
+  rageText.style.opacity = "1";
+  rageText.textContent = "넌 내가 봐준 거다... 보여주마 작은놈의 힘을!!!";
+
+  setTimeout(() => {
+    clearInterval(flickerInterval);
+    window.location.href = "jinwo18.html";
+  }, 3000);
+}
+
+// 🧭 진우 이동
+let x = 280, y = 40;
+const moveSpeed = 10;
+window.addEventListener("keydown", (e) => {
+  e.preventDefault();
+  switch (e.key.toLowerCase()) {
+    case "w": y += moveSpeed; break;
+    case "s": y -= moveSpeed; break;
+    case "a": x -= moveSpeed; break;
+    case "d": x += moveSpeed; break;
+  }
+  x = Math.max(0, Math.min(560, x));
+  y = Math.max(0, Math.min(190, y));
+  jinwoo.style.left = x + "px";
+  jinwoo.style.bottom = y + "px";
+});
+
+warnAndAttack();
+</script>
+</body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>작은남자 폭주전 (3회 공격 + 1초 지속)</title>
+<style>
+body {
+  margin: 0;
+  background: black;
+  color: white;
+  overflow: hidden;
+  font-family: "Courier New", monospace;
+}
+#battle-box {
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 250px;
+  border: 3px solid white;
+  background: #111;
+  overflow: hidden;
+}
+#jinwoo {
+  position: absolute;
+  bottom: 40px;
+  left: 280px;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: #00aaff;
+  box-shadow: 0 0 12px #00ffff;
+  transition: opacity 0.1s;
+}
+#boss {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 0 25px rgba(255,255,255,0.9);
+  animation: flicker 0.2s infinite alternate;
+  transition: filter 2s ease-in-out;
+}
+@keyframes flicker {
+  0% { filter: brightness(1); }
+  100% { filter: brightness(3); }
+}
+.warning-line {
+  position: absolute;
+  background: rgba(255,0,0,0.3);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.laser {
+  position: absolute;
+  background: linear-gradient(to right, white, #aaffff);
+  box-shadow: 0 0 35px white;
+}
+#hp, #boss-hp {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+#hp { bottom: 370px; color: #ff5555; }
+#boss-hp { top: 10px; color: #ffaa00; }
+#dialogue {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 80px;
+  background: #111;
+  border: 3px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+#damage-flash {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+#damage-text {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ff3333;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+}
+#attack-btn {
+  position: absolute;
+  bottom: 130px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 24px;
+  background: #ff4040;
+  border: 3px solid white;
+  color: white;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: none;
+  transition: 0.2s;
+}
+#attack-btn:hover { background: white; color: #ff4040; }
+#rage-text {
+  position: fixed;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  color: red;
+  font-weight: bold;
+  opacity: 0;
+  transition: opacity 0.3s;
+  text-shadow: 0 0 20px red;
+}
+</style>
+</head>
+<body>
+<div id="battle-box">
+  <div id="jinwoo"></div>
+</div>
+<img id="boss" src="smallman.jpg" alt="키작은남자 폭주폼">
+<div id="boss-hp">보스 HP: 600</div>
+<div id="hp"></div>
+<div id="dialogue">작은남자: 빛의 십자가! 피할 수 있겠어?</div>
+<div id="damage-flash"></div>
+<div id="damage-text">💔 체력 -1</div>
+<div id="rage-text"></div>
+<button id="attack-btn">⚔ 반격!</button>
+
+<script>
+const battleBox = document.getElementById("battle-box");
+const jinwoo = document.getElementById("jinwoo");
+const dialogue = document.getElementById("dialogue");
+const hpDisplay = document.getElementById("hp");
+const bossHpDisplay = document.getElementById("boss-hp");
+const flash = document.getElementById("damage-flash");
+const dmgText = document.getElementById("damage-text");
+const attackBtn = document.getElementById("attack-btn");
+const rageText = document.getElementById("rage-text");
+const bossImg = document.getElementById("boss");
+
+let jinwooHp = 3;
+let bossHp = 600;
+let attackCount = 0;
+let invincible = false;
+
+updateHp();
+
+function updateHp() {
+  hpDisplay.textContent = `❤️ x${jinwooHp}`;
+  bossHpDisplay.textContent = `보스 HP: ${bossHp}`;
+}
+
+// ⚡ 십자가 공격
+function fireCrossLaser() {
+  const jRect = jinwoo.getBoundingClientRect();
+  const boxRect = battleBox.getBoundingClientRect();
+  const relX = jRect.left - boxRect.left + jRect.width / 2;
+  const relY = parseFloat(jinwoo.style.bottom) + 22;
+
+  // 경고선
+  const warnH = document.createElement("div");
+  warnH.className = "warning-line";
+  warnH.style.left = "0";
+  warnH.style.width = "100%";
+  warnH.style.height = "20px";
+  warnH.style.bottom = relY + "px";
+
+  const warnV = document.createElement("div");
+  warnV.className = "warning-line";
+  warnV.style.top = "0";
+  warnV.style.height = "100%";
+  warnV.style.width = "20px";
+  warnV.style.left = relX + "px";
+
+  battleBox.appendChild(warnH);
+  battleBox.appendChild(warnV);
+  warnH.style.opacity = "1";
+  warnV.style.opacity = "1";
+
+  setTimeout(() => {
+    warnH.remove();
+    warnV.remove();
+
+    const laserH = document.createElement("div");
+    laserH.className = "laser";
+    laserH.style.left = "0";
+    laserH.style.width = "100%";
+    laserH.style.height = "20px";
+    laserH.style.bottom = relY + "px";
+
+    const laserV = document.createElement("div");
+    laserV.className = "laser";
+    laserV.style.top = "0";
+    laserV.style.height = "100%";
+    laserV.style.width = "20px";
+    laserV.style.left = relX + "px";
+
+    battleBox.appendChild(laserH);
+    battleBox.appendChild(laserV);
+
+    // 충돌 감지 (1초 유지)
+    const checkHit = setInterval(() => {
+      const j = jinwoo.getBoundingClientRect();
+      const h = laserH.getBoundingClientRect();
+      const v = laserV.getBoundingClientRect();
+      if (
+        (h.bottom > j.top && h.top < j.bottom && h.right > j.left && h.left < j.right) ||
+        (v.bottom > j.top && v.top < j.bottom && v.right > j.left && v.left < j.right)
+      ) {
+        hitJinwoo();
+      }
+    }, 50);
+
+    setTimeout(() => {
+      laserH.remove();
+      laserV.remove();
+      clearInterval(checkHit);
+    }, 1000); // 🔥 지속시간 1초
+  }, 800);
+
+  attackCount++;
+  if (attackCount >= 3) { // 💥 3회 후 반격
+    attackCount = 0;
+    setTimeout(() => {
+      dialogue.textContent = "지금이다! 반격해!";
+      attackBtn.style.display = "block";
+    }, 800);
+  } else {
+    setTimeout(() => {
+      if (jinwooHp > 0) fireCrossLaser();
+    }, 800);
+  }
+}
+
+// ❤️ 피격 (무적 + 깜빡)
+function hitJinwoo() {
+  if (invincible) return;
+  jinwooHp--;
+  updateHp();
+  invincible = true;
+
+  let blinkCount = 0;
+  const blink = setInterval(() => {
+    jinwoo.style.opacity = jinwoo.style.opacity === "0.3" ? "1" : "0.3";
+    blinkCount++;
+    if (blinkCount > 10) {
+      clearInterval(blink);
+      jinwoo.style.opacity = "1";
+    }
+  }, 100);
+
+  setTimeout(() => (invincible = false), 1000);
+
+  flash.style.opacity = "1";
+  setTimeout(() => (flash.style.opacity = "0"), 200);
+  dmgText.style.opacity = "1";
+  setTimeout(() => (dmgText.style.opacity = "0"), 800);
+  dialogue.textContent = "진우가 빛의 십자가에 맞았다!";
+  if (jinwooHp <= 0) {
+    dialogue.textContent = "진우는 쓰러졌다...";
+    setTimeout(() => window.location.href = "board.html", 2000);
+  }
+}
+
+// ⚔ 반격
+attackBtn.addEventListener("click", () => {
+  attackBtn.style.display = "none";
+  const damage = 100;
+  bossHp -= damage;
+  updateHp();
+  dialogue.textContent = `진우의 반격! 💥 (-${damage})`;
+
+  if (bossHp <= 0) bossDefeated();
+  else setTimeout(() => fireCrossLaser(), 1000);
+});
+
+// 💀 보스 패배
+function bossDefeated() {
+  dialogue.textContent = "";
+  bossImg.style.animation = "none";
+  bossImg.style.filter = "brightness(0)";
+  rageText.style.opacity = 1;
+  rageText.textContent = "니가 이긴건... 키빨이야!!!!!!!!!!";
+  setTimeout(() => window.location.href = "jinwo19.html", 3000);
+}
+
+// 🧭 진우 이동
+let x = 280, y = 40;
+const moveSpeed = 15;
+let keys = {};
+
+window.addEventListener("keydown", e => keys[e.key.toLowerCase()] = true);
+window.addEventListener("keyup", e => keys[e.key.toLowerCase()] = false);
+
+function moveJinwoo() {
+  if (keys["w"]) y += moveSpeed * 0.8;
+  if (keys["s"]) y -= moveSpeed * 0.8;
+  if (keys["a"]) x -= moveSpeed;
+  if (keys["d"]) x += moveSpeed;
+  x = Math.max(0, Math.min(560, x));
+  y = Math.max(0, Math.min(190, y));
+  jinwoo.style.left = x + "px";
+  jinwoo.style.bottom = y + "px";
+  requestAnimationFrame(moveJinwoo);
+}
+moveJinwoo();
+fireCrossLaser();
+</script>
+</body>
+</html>

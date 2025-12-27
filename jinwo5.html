@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>진우의 학교</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: linear-gradient(to bottom, #cfe8ff 0%, #ffffff 100%);
+      font-family: 'Arial', sans-serif;
+    }
+
+    /* 🎓 학교 배경 */
+    #game-area {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(to bottom, #b8e0ff 0%, #e0f0ff 60%, #ffffff 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* 👕 파란 옷을 입은 진우 */
+    #jinwoo {
+      position: absolute;
+      bottom: 15%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 70px;
+      height: 85px;
+      background: #4da3ff;
+      border-radius: 50%;
+      box-shadow: 0 0 25px rgba(0, 100, 255, 0.6);
+      animation: appear 2s ease-in-out;
+    }
+
+    /* 💬 대사 텍스트 */
+    #dialogue {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px 30px;
+      border-radius: 12px;
+      border: 2px solid #0077b6;
+      color: #004c70;
+      font-weight: bold;
+      font-size: 1.4rem;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.5s;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    }
+
+    /* 🖼️ 이미지 (2874.jpg) */
+    #photo {
+      position: absolute;
+      width: 0;
+      height: auto;
+      opacity: 0;
+      transition: all 1.5s ease-in-out;
+      z-index: 10;
+      border-radius: 12px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.4);
+    }
+
+    /* 💬 '이게 나다' 텍스트 */
+    #final-text {
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #003049;
+      font-weight: bold;
+      font-size: 1.8rem;
+      opacity: 0;
+      transition: opacity 1s;
+      z-index: 11;
+      text-shadow: 0 0 10px rgba(255,255,255,0.8);
+    }
+
+    @keyframes appear {
+      0% { transform: translate(-50%, 100%) scale(0.5); opacity: 0; }
+      50% { transform: translate(-50%, -10%) scale(1.1); opacity: 1; }
+      100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div id="game-area">
+    <div id="jinwoo"></div>
+    <div id="dialogue">난 통통하지만 전설의 잘생긴 미남이다.</div>
+    <img id="photo" src="2874.jpg" alt="진우 사진">
+    <div id="final-text">이게 나다.</div>
+  </div>
+
+  <!-- 🎵 밝은 학교 음악 -->
+  <audio id="bgm" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_31d1d189cb.mp3?filename=happy-ukulele-13725.mp3" loop></audio>
+
+  <script>
+    const dialogue = document.getElementById("dialogue");
+    const photo = document.getElementById("photo");
+    const finalText = document.getElementById("final-text");
+    const bgm = document.getElementById("bgm");
+    bgm.volume = 0.5;
+    bgm.play();
+
+    // 1️⃣ 진우 대사 등장
+    setTimeout(() => {
+      dialogue.style.opacity = 1;
+    }, 1000);
+
+    // 2️⃣ 4초 후 대사 사라짐 → 이미지 표시
+    setTimeout(() => {
+      dialogue.style.opacity = 0;
+      photo.style.width = "60vw";
+      photo.style.opacity = 1;
+    }, 5000);
+
+    // 3️⃣ 5초 뒤 “이게 나다” 텍스트 표시
+    setTimeout(() => {
+      finalText.style.opacity = 1;
+    }, 10000);
+
+    // 4️⃣ 3초 뒤 다음 장면 이동 (jinwo6.html)
+    setTimeout(() => {
+      bgm.pause();
+      window.location.href = "jinwo6.html";
+    }, 13000);
+  </script>
+</body>
+</html>

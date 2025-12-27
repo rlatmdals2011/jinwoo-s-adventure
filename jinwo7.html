@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>진우의 보상</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: linear-gradient(to bottom, #fff7e6 0%, #fffdf5 100%);
+      font-family: "맑은 고딕", sans-serif;
+    }
+
+    /* 🏠 집 내부 */
+    #home {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    /* 👩 엄마 */
+    #mom {
+      font-size: 90px;
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    /* 💬 대화창 */
+    #dialogue {
+      margin-top: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 3px solid #ffb703;
+      border-radius: 15px;
+      padding: 20px 40px;
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #333;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    /* 💸 돈 이미지 */
+    #money {
+      position: absolute;
+      top: -100px;
+      width: 90px; /* 더 작게 조정 */
+      left: calc(50% - 45px);
+      opacity: 0;
+      transform: rotate(0deg);
+      transition: opacity 0.5s, transform 0.5s;
+    }
+
+    /* 🧒 진우 이미지 */
+    #jinwoo {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 150px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transition: opacity 1s;
+    }
+
+    /* 마지막 문구 */
+    #final {
+      position: absolute;
+      bottom: 150px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px 50px;
+      border-radius: 15px;
+      border: 3px solid #0077b6;
+      font-weight: bold;
+      font-size: 1.3rem;
+      color: #023e8a;
+      opacity: 0;
+      transition: opacity 1s;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes fall {
+      0% { top: -150px; transform: rotate(0deg); opacity: 1; }
+      100% { top: 70%; transform: rotate(15deg); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div id="home">
+    <div id="mom">😊</div>
+    <div id="dialogue"></div>
+
+    <!-- 💸 moneyt.jpg (작게) -->
+    <img id="money" src="moneyt.jpg" alt="만원" />
+
+    <!-- 🧒 진우 (6122.jpg로 변경) -->
+    <img id="jinwoo" src="6122.jpg" alt="진우" />
+
+    <div id="final">진우는 세상에서 제일 행복했다.</div>
+  </div>
+
+  <!-- 🎵 따뜻한 배경 음악 -->
+  <audio id="bgm" src="https://cdn.pixabay.com/download/audio/2023/03/06/audio_2780df05c3.mp3?filename=happy-day-141076.mp3" loop></audio>
+
+  <script>
+    const dialogue = document.getElementById("dialogue");
+    const money = document.getElementById("money");
+    const jinwoo = document.getElementById("jinwoo");
+    const final = document.getElementById("final");
+    const bgm = document.getElementById("bgm");
+
+    bgm.volume = 0.5;
+    bgm.play();
+
+    // 1️⃣ 엄마 대사
+    setTimeout(() => {
+      dialogue.textContent = "진우야, 시험 잘 봤다~! 이건 네 용돈이야!";
+      dialogue.style.opacity = 1;
+    }, 1000);
+
+    // 2️⃣ 돈 떨어지기
+    setTimeout(() => {
+      money.style.animation = "fall 2s ease-in-out forwards";
+      money.style.opacity = 1;
+    }, 3000);
+
+    // 3️⃣ 진우 등장
+    setTimeout(() => {
+      jinwoo.style.opacity = 1;
+      dialogue.textContent = "고마워요 엄마! 💖";
+    }, 5500);
+
+    // 4️⃣ 마지막 문구
+    setTimeout(() => {
+      dialogue.style.opacity = 0;
+      final.style.opacity = 1;
+    }, 8000);
+
+    // 5️⃣ 다음 장면으로 이동
+    setTimeout(() => {
+      window.location.href = "jinwo8.html";
+    }, 11000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>진우의 골목길</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: linear-gradient(to bottom, #0a0a0a 0%, #1b263b 100%);
+      font-family: "맑은 고딕", sans-serif;
+    }
+
+    #game {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    /* 🔵 진우 (파란 공) */
+    #jinwoo {
+      position: absolute;
+      bottom: 40px;
+      left: 50px;
+      width: 60px;
+      height: 60px;
+      background: #0077ff;
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(0, 119, 255, 0.8);
+      transition: left 0.05s linear;
+    }
+
+    /* 😈 일진 */
+    #ddong {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: auto;
+    }
+
+    /* 🪧 안내문 */
+    #tip {
+      position: absolute;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #ffffff;
+      font-size: 2rem;
+      font-weight: bold;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 10px 30px;
+      border-radius: 12px;
+      border: 2px solid #00b4d8;
+      box-shadow: 0 0 15px rgba(0,180,216,0.7);
+      text-shadow: 0 0 10px rgba(0,200,255,0.8);
+    }
+
+    /* 💬 대화창 */
+    #dialogue {
+      position: absolute;
+      bottom: 160px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255,255,255,0.95);
+      padding: 20px 40px;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: bold;
+      border: 3px solid #000;
+      display: none;
+      color: #222;
+      z-index: 5;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+
+    /* 선택 버튼 */
+    .choice {
+      background: #1d3557;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 10px;
+      font-size: 1rem;
+      transition: 0.2s;
+    }
+    .choice:hover {
+      background: #457b9d;
+    }
+
+    /* 공지 텍스트 */
+    #notice {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255,255,255,0.9);
+      padding: 30px 50px;
+      border-radius: 15px;
+      border: 3px solid #222;
+      font-size: 1.4rem;
+      font-weight: bold;
+      display: none;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <div id="game">
+    <div id="tip">A D로 움직이세요</div>
+    <div id="jinwoo"></div>
+    <img id="ddong" src="ddong.png" alt="일진" />
+    <div id="dialogue"></div>
+    <div id="notice"></div>
+  </div>
+
+  <!-- 🎵 긴장감 있는 골목길 음악 -->
+  <audio id="bgm" src="https://cdn.pixabay.com/download/audio/2022/10/23/audio_78dff1a289.mp3?filename=dangerous-street-12367.mp3" loop></audio>
+
+  <script>
+    const jinwoo = document.getElementById("jinwoo");
+    const ddong = document.getElementById("ddong");
+    const dialogue = document.getElementById("dialogue");
+    const notice = document.getElementById("notice");
+    const bgm = document.getElementById("bgm");
+
+    bgm.volume = 0.4;
+    bgm.play();
+
+    let pos = 50;
+    const speed = 10;
+    let eventTriggered = false;
+
+    // 🔹 A, D 이동
+    document.addEventListener("keydown", (e) => {
+      if (eventTriggered) return;
+
+      if (e.key === "a" || e.key === "A") pos -= speed;
+      if (e.key === "d" || e.key === "D") pos += speed;
+
+      pos = Math.max(0, Math.min(window.innerWidth - 60, pos));
+      jinwoo.style.left = pos + "px";
+
+      checkCollision();
+    });
+
+    // 🔸 충돌 감지
+    function checkCollision() {
+      const jinRect = jinwoo.getBoundingClientRect();
+      const ddRect = ddong.getBoundingClientRect();
+
+      if (
+        jinRect.right > ddRect.left &&
+        jinRect.left < ddRect.right &&
+        jinRect.bottom > ddRect.top &&
+        jinRect.top < ddRect.bottom
+      ) {
+        triggerDialogue();
+      }
+    }
+
+    // 💬 대화 이벤트
+    function triggerDialogue() {
+      eventTriggered = true;
+      dialogue.innerHTML = "너 돈 좀 있냐?<br><button class='choice' onclick='chooseYes()'>있어요</button><button class='choice' onclick='chooseNo()'>없어요</button>";
+      dialogue.style.display = "block";
+    }
+
+    // 💸 "있어요" → 돈 뺏기고 종료
+    function chooseYes() {
+      dialogue.style.display = "none";
+      notice.textContent = "1만원을 뺏겼다... 진우의 모험은 끝났다.";
+      notice.style.display = "block";
+      setTimeout(() => {
+        window.location.href = "board.html";
+      }, 3000);
+    }
+
+    // 💢 "없어요" → 협박 후 jinwo9으로 이동
+    function chooseNo() {
+      dialogue.style.display = "none";
+      notice.textContent = "10원당 한 대다...";
+      notice.style.display = "block";
+      setTimeout(() => {
+        window.location.href = "jinwo9.html";
+      }, 2000);
+    }
+  </script>
+</body>
+</html>

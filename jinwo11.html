@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>진우의 각성</title>
+  <style>
+    body {
+      margin: 0;
+      background: radial-gradient(circle at center, #0a0a0a 0%, #000000 100%);
+      color: white;
+      font-family: "맑은 고딕", sans-serif;
+      overflow: hidden;
+    }
+
+    #scene {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    #mentor {
+      width: 200px;
+      height: auto;
+      margin-bottom: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 40px rgba(0, 255, 255, 0.6);
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    #dialogue {
+      font-size: 1.4rem;
+      margin-top: 20px;
+      opacity: 0;
+      transition: opacity 1s;
+      color: #aafaff;
+    }
+
+    #result {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-top: 25px;
+      opacity: 0;
+      transition: opacity 1s;
+    }
+
+    #fade {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: black;
+      opacity: 0;
+      transition: opacity 2s;
+      z-index: 5;
+    }
+  </style>
+</head>
+<body>
+  <div id="scene">
+    <img id="mentor" src="qudtls.jpg" alt="스승님" />
+    <div id="dialogue">...힘을 개방하겠다...</div>
+    <div id="result"></div>
+    <div id="fade"></div>
+  </div>
+
+  <audio
+    id="bgm"
+    src="https://cdn.pixabay.com/download/audio/2023/03/16/audio_4e9c18332f.mp3?filename=dark-fantasy-intro-14255.mp3"
+    loop
+  ></audio>
+
+  <script>
+    const dialogue = document.getElementById("dialogue");
+    const result = document.getElementById("result");
+    const fade = document.getElementById("fade");
+    const bgm = document.getElementById("bgm");
+
+    bgm.volume = 0.5;
+    bgm.play();
+
+    // ✅ 페이지 들어올 때마다 새로 뽑기 (기존 저장 무시)
+    const rand = Math.floor(Math.random() * 100);
+    let role = "";
+    let dmg = 0;
+    let hp = 0;
+    let color = "";
+
+    if (rand < 50) {
+      role = "🥊 복서";
+      dmg = 100;
+      hp = 3;
+      color = "#00aaff";
+    } else if (rand < 90) {
+      role = "🪨 진화한 샌드백";
+      dmg = 50;
+      hp = 10;
+      color = "#ffaa00";
+    } else {
+      role = "☠️ 네크로맨서";
+      dmg = 100;
+      hp = 8;
+      color = "#b300ff";
+    }
+
+    // 🧠 localStorage에 새로 저장 (매번 덮어씀)
+    localStorage.setItem("jinwooJob", role.replace(/[^가-힣a-zA-Z]/g, ""));
+    localStorage.setItem("jinwooAtk", dmg);
+    localStorage.setItem("jinwooHp", hp);
+
+    // 연출 타이밍
+    setTimeout(() => {
+      dialogue.style.opacity = 1;
+      dialogue.textContent = "힘의 파동이 느껴진다...";
+    }, 1500);
+
+    setTimeout(() => {
+      result.style.opacity = 1;
+      result.style.color = color;
+      result.innerHTML = `너는 <span style="font-size:2rem">${role}</span>가 되었다!<br>
+      공격력 💥 ${dmg} / 체력 ❤️ ${hp}`;
+    }, 4000);
+
+    setTimeout(() => {
+      dialogue.textContent = "스승님: 훌륭하군... 네 운명은 정해졌다.";
+    }, 7000);
+
+    setTimeout(() => {
+      fade.style.opacity = 1;
+    }, 10000);
+
+    setTimeout(() => {
+      window.location.href = "jinwo12.html";
+    }, 13000);
+  </script>
+</body>
+</html>

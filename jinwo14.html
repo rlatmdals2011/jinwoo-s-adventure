@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>보스의 고백</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(to bottom, #000000, #202020);
+      color: white;
+      font-family: "맑은 고딕", sans-serif;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    #boss {
+      width: 220px;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 40px rgba(255, 0, 0, 0.6);
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 2s, transform 2s;
+    }
+
+    #dialogue {
+      margin-top: 40px;
+      font-size: 1.4rem;
+      color: #aafaff;
+      opacity: 0;
+      transition: opacity 1.5s;
+      line-height: 1.8rem;
+      white-space: pre-line;
+    }
+
+    #fade {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: black;
+      opacity: 0;
+      transition: opacity 2s;
+      z-index: 5;
+    }
+  </style>
+</head>
+<body>
+  <img id="boss" src="rotoRl.jpg" alt="햄버거 보스" />
+  <div id="dialogue">...</div>
+  <div id="fade"></div>
+
+  <audio id="bgm" src="https://cdn.pixabay.com/download/audio/2023/02/02/audio_b260a8b77b.mp3?filename=sad-piano-music-13767.mp3" loop></audio>
+
+  <script>
+    const boss = document.getElementById("boss");
+    const dialogue = document.getElementById("dialogue");
+    const fade = document.getElementById("fade");
+    const bgm = document.getElementById("bgm");
+
+    bgm.volume = 0.5;
+    bgm.play();
+
+    // 등장
+    setTimeout(() => {
+      boss.style.opacity = 1;
+      boss.style.transform = "scale(1)";
+    }, 1000);
+
+    // 대사 순서대로 표시
+    setTimeout(() => {
+      dialogue.style.opacity = 1;
+      dialogue.textContent =
+        "보스: 미안해...\n" +
+        "근데 진짜로 난 동휘랑 친구도 아니야...\n" +
+        "관련이 1도 없다고ㅠㅠㅠㅠㅠㅠㅠㅠㅠ";
+    }, 2500);
+
+    setTimeout(() => {
+      dialogue.textContent += "\n\n하지만... 민규라는 놈은 관련이 있을지도 몰라...";
+    }, 6500);
+
+    // 페이드아웃 → 다음 씬
+    setTimeout(() => {
+      fade.style.opacity = 1;
+    }, 9500);
+
+    setTimeout(() => {
+      window.location.href = "jinwo15.html";
+    }, 12000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+/* 🪐 전체 화면 */
+body {
+  margin: 0;
+  height: 100vh;
+  overflow: hidden;
+  font-family: "Press Start 2P", cursive;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  background: linear-gradient(to top, #001220, #002244, #003366);
+  position: relative;
+}
+
+/* 🌟 반짝이는 별들 */
+.star {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  opacity: 0.8;
+  animation: twinkle 2s infinite ease-in-out alternate;
+}
+@keyframes twinkle {
+  0% { opacity: 0.3; transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1.2); }
+}
+
+/* 🌙 달 */
+.moon {
+  position: absolute;
+  top: 10%;
+  right: 15%;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fff8cc, #f6e27f, #e0c95b);
+  box-shadow: 0 0 60px #fff4a3, 0 0 120px #fff7b5;
+}
+
+/* 🏔️ 산 3겹 */
+.mountain {
+  position: absolute;
+  bottom: 0;
+  width: 150%;
+  height: 60%;
+  background: #002855;
+  clip-path: polygon(0 60%, 15% 40%, 35% 65%, 50% 45%, 70% 70%, 90% 50%, 100% 60%, 100% 100%, 0 100%);
+  z-index: 0;
+}
+.mountain2 {
+  position: absolute;
+  bottom: 0;
+  width: 150%;
+  height: 55%;
+  background: #004b8d;
+  clip-path: polygon(0 70%, 20% 50%, 40% 75%, 60% 50%, 80% 75%, 100% 60%, 100% 100%, 0 100%);
+  z-index: 1;
+}
+.mountain3 {
+  position: absolute;
+  bottom: 0;
+  width: 150%;
+  height: 50%;
+  background: #005f99;
+  clip-path: polygon(0 80%, 25% 60%, 50% 80%, 75% 60%, 100% 75%, 100% 100%, 0 100%);
+  z-index: 2;
+}
+
+/* 🎮 제목 */
+h1 {
+  font-size: 2.6rem;
+  text-shadow: 0 0 20px #9ad7ff, 0 0 40px #00bfff;
+  margin-bottom: 60px;
+  z-index: 5;
+  animation: glow 2s infinite alternate;
+}
+@keyframes glow {
+  from { text-shadow: 0 0 10px #0077cc, 0 0 30px #0099ff; }
+  to { text-shadow: 0 0 60px #00ffff, 0 0 100px #33ccff; }
+}
+
+/* 버튼 */
+button {
+  font-size: 1.3rem;
+  padding: 15px 45px;
+  border-radius: 12px;
+  background: rgba(0, 255, 255, 0.1);
+  border: 2px solid #00ffff;
+  color: white;
+  cursor: pointer;
+  z-index: 5;
+  backdrop-filter: blur(5px);
+  transition: 0.3s;
+  box-shadow: 0 0 25px #00ffff40;
+}
+button:hover {
+  background: rgba(0, 255, 255, 0.4);
+  box-shadow: 0 0 40px #00ffff, 0 0 100px #0099ff;
+  transform: scale(1.1);
+}
+
+/* 하단 */
+.footer {
+  position: absolute;
+  bottom: 15px;
+  font-size: 0.8rem;
+  color: #99c2ff;
+  text-shadow: 0 0 10px #001220;
+  z-index: 5;
+}

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>진우 vs 동휘 - 결전 (난이도 ★★★★☆)</title>
+<style>
+body {
+  margin: 0;
+  background: radial-gradient(circle at center, #300000 10%, #000000 100%);
+  overflow: hidden;
+  font-family: "Courier New", monospace;
+  color: white;
+}
+#battlefield {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+#jinwoo {
+  position: absolute;
+  left: 18%;
+  top: 60%;
+  width: 130px;
+  transition: 0.1s;
+  filter: drop-shadow(0 0 40px #00aaff);
+}
+#donghui {
+  position: absolute;
+  right: 18%;
+  top: 40%;
+  width: 220px;
+  transform: scaleX(-1);
+  filter: drop-shadow(0 0 50px #ff0000);
+  animation: redAura 1s infinite alternate;
+}
+@keyframes redAura {
+  0% { filter: drop-shadow(0 0 40px #ff0000); }
+  100% { filter: drop-shadow(0 0 120px #ff3333); }
+}
+
+/* HP 표시 */
+#donghuiHP {
+  position: absolute;
+  right: 17%;
+  top: 25%;
+  width: 200px;
+  height: 20px;
+  background: #440000;
+  border: 2px solid #fff;
+}
+#donghuiHPbar {
+  height: 100%;
+  width: 100%;
+  background: red;
+  transition: width 0.2s linear;
+}
+
+/* 체력 */
+#hpBar {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 1.4rem;
+}
+
+/* 오브 */
+.energy, .orb, .healOrb, .powerOrb {
+  position: absolute;
+  border-radius: 50%;
+}
+.energy {
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(circle, #ff6666, #ff0000, #550000);
+  box-shadow: 0 0 60px #ff0000, 0 0 120px #ff3333;
+  border: 3px solid rgba(255,100,100,0.7);
+  animation: pulse 0.4s infinite alternate;
+}
+@keyframes pulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.15); }
+}
+
+.orb {
+  width: 45px;
+  height: 45px;
+  background: radial-gradient(circle, #66ccff, #0044ff);
+  box-shadow: 0 0 30px #00aaff;
+  animation: float 2s ease-in-out infinite alternate;
+}
+.healOrb {
+  width: 45px;
+  height: 45px;
+  background: radial-gradient(circle, #33ff77, #008833);
+  box-shadow: 0 0 25px #00ff66;
+  animation: float 2s ease-in-out infinite alternate;
+}
+.powerOrb {
+  width: 45px;
+  height: 45px;
+  background: radial-gradient(circle, #cc66ff, #6600cc);
+  box-shadow: 0 0 40px #aa33ff;
+  animation: float 2s ease-in-out infinite alternate;
+}
+@keyframes float { from { transform: translateY(0); } to { transform: translateY(-10px); } }
+
+/* 주먹 */
+.punch {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  font-size: 3rem;
+  text-align: center;
+  line-height: 60px;
+  color: #00ffff;
+  filter: drop-shadow(0 0 20px #00ffff);
+  transition: transform 0.1s linear;
+}
+
+/* 화면 효과 */
+#flash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,0,0,0.3); opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+
+/* 스승님 대사창 */
+#mentorBox {
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.7);
+  border: 2px solid #fff;
+  border-radius: 12px;
+  padding: 15px 30px;
+  font-size: 1.3rem;
+  color: #fff;
+  text-align: left;
+  box-shadow: 0 0 25px #00ffff;
+  opacity: 0;
+  transition: opacity 0.5s;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+#mentorBox img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px solid white;
+  object-fit: cover;
+}
+</style>
+</head>
+<body>
+<div id="battlefield">
+  <img id="jinwoo" src="2874.jpg" alt="진우">
+  <img id="donghui" src="imboss.jpg" alt="동휘">
+  <div id="donghuiHP"><div id="donghuiHPbar"></div></div>
+  <div id="hpBar"></div>
+  <div id="flash"></div>
+  <div id="mentorBox">
+    <img src="qudtls.jpg" alt="스승님">
+    <span>진우야, 파란색 구슬은 너의 공격이다.</span>
+  </div>
+</div>
+
+<script>
+let job = localStorage.getItem("jinwooJob") || "복서";
+let stats = {
+  "복서": { hp: 3, atk: 150 },
+  "진화한 샌드백": { hp: 10, atk: 50 },
+  "네크로맨서": { hp: 8, atk: 120 }
+};
+let { hp, atk } = stats[job];
+let donghuiHP = 2000;
+
+const battlefield = document.getElementById("battlefield");
+const jinwoo = document.getElementById("jinwoo");
+const donghui = document.getElementById("donghui");
+const hpBar = document.getElementById("hpBar");
+const flash = document.getElementById("flash");
+const dhHPbar = document.getElementById("donghuiHPbar");
+const mentorBox = document.getElementById("mentorBox");
+const mentorText = mentorBox.querySelector("span");
+
+let keys = {};
+let x = 18, y = 60;
+let invincible = false;
+let powered = false;
+let powerTimer;
+
+function updateHP() {
+  hpBar.textContent = `❤️`.repeat(hp) + ` (${job})`;
+  let ratio = Math.max(donghuiHP / 2000, 0);
+  dhHPbar.style.width = (ratio * 100) + "%";
+}
+updateHP();
+
+// 이동
+window.addEventListener("keydown", e => keys[e.key.toLowerCase()] = true);
+window.addEventListener("keyup", e => keys[e.key.toLowerCase()] = false);
+function move() {
+  const speed = 1.0;
+  if (keys["w"]) y -= speed;
+  if (keys["s"]) y += speed;
+  if (keys["a"]) x -= speed;
+  if (keys["d"]) x += speed;
+  x = Math.max(3, Math.min(70, x));
+  y = Math.max(5, Math.min(85, y));
+  jinwoo.style.left = x + "%";
+  jinwoo.style.top = y + "%";
+  requestAnimationFrame(move);
+}
+
+// 오브 생성
+function createOrb(type) {
+  const orb = document.createElement("div");
+  orb.classList.add(type);
+  battlefield.appendChild(orb);
+  orb.style.left = Math.random() * (window.innerWidth * 0.6) + "px";
+  orb.style.top = Math.random() * (window.innerHeight * 0.7) + 100 + "px";
+
+  const interval = setInterval(() => {
+    const r1 = orb.getBoundingClientRect();
+    const r2 = jinwoo.getBoundingClientRect();
+    if (r1.left < r2.right && r1.right > r2.left && r1.top < r2.bottom && r1.bottom > r2.top) {
+      battlefield.removeChild(orb);
+      clearInterval(interval);
+      if (type === "orb") guidedPunch();
+      if (type === "healOrb") healUp();
+      if (type === "powerOrb") powerUp();
+    }
+  }, 40);
+  setTimeout(() => {
+    if (battlefield.contains(orb)) battlefield.removeChild(orb);
+    clearInterval(interval);
+  }, type === "powerOrb" ? 8000 : 6000);
+}
+
+// 유도 주먹
+function guidedPunch() {
+  const punch = document.createElement("div");
+  punch.classList.add("punch");
+  punch.textContent = "👊";
+  battlefield.appendChild(punch);
+  let px = jinwoo.offsetLeft + 80;
+  let py = jinwoo.offsetTop + 30;
+  const interval = setInterval(() => {
+    const targetX = donghui.offsetLeft + donghui.offsetWidth / 2;
+    const targetY = donghui.offsetTop + donghui.offsetHeight / 2;
+    const dx = (targetX - px) * 0.1;
+    const dy = (targetY - py) * 0.1;
+    px += dx;
+    py += dy;
+    punch.style.left = px + "px";
+    punch.style.top = py + "px";
+    const r1 = punch.getBoundingClientRect();
+    const r2 = donghui.getBoundingClientRect();
+    if (r1.left < r2.right && r1.right > r2.left && r1.top < r2.bottom && r1.bottom > r2.top) {
+      battlefield.removeChild(punch);
+      clearInterval(interval);
+      let dmg = powered ? atk * 2 : atk;
+      donghuiHP -= dmg;
+      updateHP();
+      donghui.style.filter = "brightness(3) drop-shadow(0 0 100px #00ffff)";
+      setTimeout(() => donghui.style.filter = "drop-shadow(0 0 50px #ff0000)", 400);
+      if (donghuiHP <= 0) setTimeout(() => (window.location.href = "jinwo23.html"), 800);
+    }
+  }, 15);
+}
+
+// 회복 & 각성
+function healUp() { if (hp < 10) hp++; updateHP(); }
+function powerUp() {
+  powered = true;
+  jinwoo.style.filter = "drop-shadow(0 0 60px #cc66ff)";
+  if (powerTimer) clearTimeout(powerTimer);
+  powerTimer = setTimeout(() => {
+    powered = false;
+    jinwoo.style.filter = "drop-shadow(0 0 40px #00aaff)";
+  }, 6000);
+}
+
+// 피격
+function takeDamage() {
+  if (invincible || hp <= 0) return;
+  invincible = true;
+  hp--;
+  flash.style.opacity = 1;
+  setTimeout(() => (flash.style.opacity = 0), 200);
+  updateHP();
+  if (hp <= 0) setTimeout(() => (window.location.href = "jinwo22.html"), 1000);
+  setTimeout(() => (invincible = false), 1000);
+}
+
+// 스승님 대사
+function showMentorDialog(text, duration) {
+  mentorText.textContent = text;
+  mentorBox.style.opacity = 1;
+  setTimeout(() => mentorBox.style.opacity = 0, duration - 300);
+}
+
+// 튜토리얼
+showMentorDialog("진우야, 파란색 구슬은 너의 공격이다.", 3000);
+setTimeout(() => showMentorDialog("초록 구슬은, 회복이다.", 3000), 3000);
+setTimeout(() => showMentorDialog("보라색 구슬은, 각성이다.", 3000), 6000);
+setTimeout(() => {
+  mentorBox.style.display = "none";
+  move();
+  setInterval(() => createOrb("orb"), 4000);
+  setInterval(() => createOrb("healOrb"), 9000);
+  setInterval(() => createOrb("powerOrb"), 30000);
+  setInterval(fireEnergy, 550); // 🔥 발사 간격 0.55초 (조금 빠르게)
+}, 9000);
+
+// 동휘 에너지탄 (난이도 ★★★★☆)
+function fireEnergy() {
+  const count = Math.random() < 0.3 ? 2 : 1; // 30% 확률로 2발
+  for (let i = 0; i < count; i++) {
+    const energy = document.createElement("div");
+    energy.classList.add("energy");
+    battlefield.appendChild(energy);
+    const startX = window.innerWidth * 0.75;
+    const startY = Math.random() * window.innerHeight * 0.6 + 100;
+    energy.style.left = startX + "px";
+    energy.style.top = startY + "px";
+    const targetX = jinwoo.offsetLeft + 60;
+    const targetY = jinwoo.offsetTop + 60;
+    const dx = (targetX - startX) / 85;
+    const dy = (targetY - startY) / 85;
+    let step = 0;
+    const interval = setInterval(() => {
+      step++;
+      energy.style.left = startX + dx * step + "px";
+      energy.style.top = startY + dy * step + "px";
+      const r1 = energy.getBoundingClientRect();
+      const r2 = jinwoo.getBoundingClientRect();
+      if (r1.left < r2.right && r1.right > r2.left && r1.top < r2.bottom && r1.bottom > r2.top) {
+        battlefield.removeChild(energy);
+        takeDamage();
+        clearInterval(interval);
+      }
+      if (step > 150) {
+        battlefield.removeChild(energy);
+        clearInterval(interval);
+      }
+    }, 15); // 🔥 이동속도 조금 빨라짐
+  }
+}
+</script>
+</body>
+</html>
