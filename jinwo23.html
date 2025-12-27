@@ -372,7 +372,7 @@ function ultimateCutscene() {
   setTimeout(() => (scene.textContent = "진우의 에너지가 폭발한다..."), 1000);
   setTimeout(() => (scene.textContent = "세상이 흔들린다!!"), 2000);
   setTimeout(() => (scene.textContent = "빛의 파동이 동휘를 덮친다! 💥"), 3000);
-
+  setTimeout(() => (scene.textContent = "강력한 궁극기에 힘에 대가가 생겼다.(움직임)"), 3000);
   // 💥 붉은 폭발 플래시
   setTimeout(() => {
     flash.style.background = "rgba(255, 50, 0, 0.5)";
@@ -473,7 +473,7 @@ function hitPlayer() {
   setTimeout(() => (flash.style.opacity = 0), 200);
   if (jinwooHP <= 0) {
     msg.textContent = "진우는 졌다...";
-    setTimeout(() => (window.location.href = "index.html"), 2500);
+    setTimeout(() => (window.location.href = "jinwodeath.html"), 2500);
   }
 }
 
