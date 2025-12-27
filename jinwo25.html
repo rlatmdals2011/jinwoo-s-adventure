@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>엔딩 - 동휘의 회복</title>
+<style>
+body {
+  margin: 0;
+  overflow: hidden;
+  background: radial-gradient(circle at center, #000000 40%, #150010 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: "Press Start 2P", monospace;
+  color: white;
+  height: 100vh;
+}
+
+/* 등장 인물 */
+#donghui, #friend, #jinwoo, #money {
+  position: absolute;
+  transition: all 2s ease;
+}
+
+#donghui {
+  width: 250px;
+  filter: drop-shadow(0 0 30px red) brightness(0.8);
+  opacity: 0;
+}
+
+#friend {
+  width: 220px;
+  right: -300px;
+  bottom: 50px;
+  opacity: 0;
+}
+
+#jinwoo {
+  width: 180px;
+  left: 120px;
+  bottom: 50px;
+  opacity: 0.3;
+  filter: grayscale(100%);
+}
+
+#money {
+  width: 100px;
+  bottom: 100px;
+  opacity: 0;
+}
+
+#dialogue {
+  position: absolute;
+  bottom: 40px;
+  background: rgba(0,0,0,0.6);
+  border: 2px solid red;
+  color: #ffaaaa;
+  padding: 15px 20px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 1s;
+}
+
+.fadeOut {
+  animation: fadeOut 3s forwards ease;
+}
+@keyframes fadeOut {
+  to { opacity: 0; filter: brightness(0); }
+}
+</style>
+</head>
+<body>
+
+<img id="donghui" src="5496.png" alt="각성 동휘">
+<img id="jinwoo" src="2874.jpg" alt="죽은 진우">
+<img id="friend" src="6412.jpg" alt="동휘의 친구">
+<img id="money" src="moneyt.jpg" alt="만원">
+<div id="dialogue"></div>
+
+<script>
+const donghui = document.getElementById("donghui");
+const jinwoo = document.getElementById("jinwoo");
+const friend = document.getElementById("friend");
+const dialogue = document.getElementById("dialogue");
+const money = document.getElementById("money");
+
+function scene() {
+  // 1️⃣ 동휘 등장 (각성 상태)
+  setTimeout(() => {
+    donghui.style.opacity = 1;
+    donghui.style.bottom = "60px";
+  }, 500);
+
+  // 2️⃣ 죽은 진우 등장
+  setTimeout(() => {
+    jinwoo.style.opacity = 1;
+  }, 1500);
+
+  // 3️⃣ 친구 등장 (6412.jpg)
+  setTimeout(() => {
+    friend.style.opacity = 1;
+    friend.style.right = "80px";
+  }, 2500);
+
+  // 4️⃣ 친구 대사
+  setTimeout(() => {
+    dialogue.textContent = "동휘야... 사람은 죽여선 아니되는데...";
+    dialogue.style.opacity = 1;
+  }, 3500);
+
+  // 5️⃣ 대사 사라지고 동휘 변화
+  setTimeout(() => {
+    dialogue.style.opacity = 0;
+    donghui.src = "imboss.jpg"; // 원래 동휘 모습으로 복귀
+    donghui.style.filter = "drop-shadow(0 0 20px #00ffcc)";
+  }, 7500);
+
+  // 6️⃣ 진우 부활 (색상 회복)
+  setTimeout(() => {
+    jinwoo.style.filter = "none";
+    jinwoo.style.opacity = 1;
+  }, 9500);
+
+  // 7️⃣ 동휘가 돈을 진우에게 돌려줌
+  setTimeout(() => {
+    money.style.opacity = 1;
+    money.style.left = "270px";
+  }, 11000);
+
+  // 8️⃣ 둘이 퇴장 (오른쪽으로)
+  setTimeout(() => {
+    donghui.style.left = "800px";
+    friend.style.left = "1000px";
+    money.style.opacity = 0;
+  }, 14000);
+
+  // 9️⃣ 화면 어두워지며 이동
+  setTimeout(() => {
+    document.body.classList.add("fadeOut");
+  }, 16500);
+
+  setTimeout(() => {
+    window.location.href = "jinwo26.html";
+  }, 19000);
+}
+
+scene();
+</script>
+</body>
+</html>
