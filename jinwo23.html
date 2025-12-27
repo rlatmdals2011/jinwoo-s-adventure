@@ -1,101 +1,195 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>진우 vs 동휘 (궁극기 버전)</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>진우 vs 동휘 : 최종전</title>
 <style>
+/* ===== 기본 스타일 ===== */
 body {
   margin: 0;
   overflow: hidden;
-  background: radial-gradient(circle at center, #000010 10%, #100020 80%);
   font-family: "Press Start 2P", cursive;
   color: white;
+  background: radial-gradient(circle at center, #000010 20%, #0b0015 80%);
 }
 
-/* ===== 상단 UI ===== */
-#bossArea { text-align: center; margin-top: 10px; }
+/* ===== 우주 배경 + 별 움직임 ===== */
+body::before {
+  content: "";
+  position: fixed;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 1px, transparent 1px);
+  background-size: 3px 3px;
+  top: 0;
+  left: 0;
+  animation: starMove 100s linear infinite;
+  z-index: 0;
+  opacity: 0.4;
+}
+@keyframes starMove {
+  from { transform: translate(0, 0); }
+  to { transform: translate(-500px, -500px); }
+}
+
+/* ===== 보스 이미지 ===== */
+#bossArea {
+  text-align: center;
+  margin-top: 15px;
+}
 #boss {
-  width: 120px; border-radius: 10px; box-shadow: 0 0 25px red;
+  width: 120px;
+  border-radius: 10px;
+  box-shadow: 0 0 40px red;
 }
-#bossHP { color: orange; font-size: 1rem; margin-top: 5px; }
+#bossHP {
+  color: orange;
+  font-size: 1rem;
+  margin-top: 5px;
+}
 
-/* ===== 전투 박스 ===== */
+/* ===== 전투박스 ===== */
 #battleBox {
-  position: absolute; top: 50%; left: 50%;
-  width: 600px; height: 350px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 650px;
+  height: 380px;
   transform: translate(-50%, -50%);
   border: 2px solid white;
-  background: rgba(0, 0, 30, 0.8);
-  overflow: visible; box-shadow: 0 0 30px cyan;
+  background: rgba(10, 10, 30, 0.7);
+  box-shadow: 0 0 25px cyan;
+  overflow: hidden;
+  z-index: 2;
 }
 
 /* ===== 진우 ===== */
 #jinwoo {
   position: absolute;
-  width: 40px; height: 40px; border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
   background: radial-gradient(circle, #00ccff, #0044ff);
-  box-shadow: 0 0 20px #00ffff;
-  top: 150px; left: 280px;
+  box-shadow: 0 0 25px #00ffff;
+  top: 150px;
+  left: 300px;
   transition: 0.05s;
+  z-index: 5;
 }
 
 /* ===== 공격 ===== */
 .attack {
-  position: absolute; width: 60px; height: 60px;
-  background: radial-gradient(circle, #ff5555, #aa0000);
-  box-shadow: 0 0 25px red; border-radius: 50%;
-  opacity: 0.9; z-index: 10;
+  position: absolute;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ff3333, #990000);
+  box-shadow: 0 0 30px red;
+  z-index: 3;
 }
 .ddoong {
-  width: 65px; height: 65px;
-  background: linear-gradient(45deg, #ff2222, #aa0000);
-  border-radius: 8px; box-shadow: 0 0 35px #ff2222;
+  width: 65px;
+  height: 65px;
+  border-radius: 8px;
+  background: linear-gradient(45deg, #ff4444, #aa0000);
+  box-shadow: 0 0 40px #ff0000;
 }
 
-/* ===== 구체 ===== */
+/* ===== 오브 ===== */
 .orb {
-  position: absolute; width: 30px; height: 30px;
-  border-radius: 50%; box-shadow: 0 0 15px; z-index: 5;
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  box-shadow: 0 0 25px;
+  z-index: 4;
 }
-.green { background: radial-gradient(circle, #00ff99, #008844); box-shadow: 0 0 25px #00ff99; }
-.yellow { background: radial-gradient(circle, #ffff66, #ffaa00); box-shadow: 0 0 25px #ffcc00; }
+.green {
+  background: radial-gradient(circle, #00ff99, #007744);
+  box-shadow: 0 0 20px #00ff99;
+}
+.yellow {
+  background: radial-gradient(circle, #ffff88, #ffbb00);
+  box-shadow: 0 0 35px #ffcc00;
+  animation: pulse 1s infinite alternate;
+}
+@keyframes pulse {
+  from { transform: scale(1); opacity: 0.8; }
+  to { transform: scale(1.3); opacity: 1; }
+}
 
 /* ===== 하단 UI ===== */
 #controlBox {
-  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-  width: 400px; height: 160px;
-  border: 2px solid white; background: #111;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 420px;
+  height: 160px;
+  border: 2px solid white;
+  background: rgba(0, 0, 0, 0.8);
+  text-align: center;
+  padding-top: 10px;
+  box-shadow: 0 0 25px #00ffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 #attackBtn {
-  background: #ff3333; color: white; border: none;
-  padding: 10px 25px; border-radius: 8px;
-  font-family: inherit; cursor: pointer;
-  font-size: 1rem; box-shadow: 0 0 10px red;
-  display: none; margin-top: 15px;
+  background: #ff3333;
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 8px;
+  font-family: inherit;
+  cursor: pointer;
+  font-size: 1rem;
+  box-shadow: 0 0 10px red;
+  display: none;
+  margin-top: 15px;
 }
-#msg { color: #ccc; font-size: 0.9rem; }
-#hearts { text-align: center; margin-top: 10px; font-size: 1.3rem; color: #ff6666; }
+#msg {
+  color: #ccc;
+  font-size: 0.9rem;
+}
+#hearts {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 1.3rem;
+  color: #ff6666;
+}
 
-/* ===== 피격 ===== */
+/* ===== 피격 / 컷씬 / 플래시 ===== */
 .flash {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(255,0,0,0.4); opacity: 0;
-  pointer-events: none; transition: opacity 0.2s;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
 }
-
-/* ===== 무적 ===== */
-.invincible { animation: blink 0.4s infinite alternate; }
-@keyframes blink { from{opacity:1;} to{opacity:0.4;} }
-
-/* ===== 궁극기 컷씬 ===== */
 #cutscene {
-  position: fixed; top:0; left:0; width:100%; height:100%;
-  background:black; opacity:0; pointer-events:none;
-  display:flex; justify-content:center; align-items:center;
-  color:white; font-size:1.5rem; text-shadow:0 0 20px cyan;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  opacity: 0;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 1.4rem;
+  text-shadow: 0 0 20px cyan;
   transition: opacity 1s;
+  z-index: 20;
 }
 </style>
 </head>
@@ -114,14 +208,14 @@ body {
 
 <div id="controlBox">
   <div id="msg">전투 시작!</div>
-  <button id="attackBtn">✖ 공격</button>
+  <button id="attackBtn">⚔ 공격할 기회다!</button>
 </div>
 
 <div class="flash" id="flash"></div>
 <div id="cutscene"></div>
 
 <script>
-/* ===== 직업별 능력치 ===== */
+/* ===== 직업 능력치 ===== */
 const jobStats = {
   "복서": { hp: 3, atk: 100 },
   "진화한샌드백": { hp: 10, atk: 50 },
@@ -130,17 +224,20 @@ const jobStats = {
   "각성진우": { hp: 20, atk: 200 }
 };
 
-/* ===== 변수 ===== */
+/* ===== 기본 변수 ===== */
 let job = localStorage.getItem("jinwooJob") || "슈퍼진우";
 let jinwooHP = jobStats[job].hp;
 let atkPower = jobStats[job].atk;
 let bossHP = 2000;
 let invincible = false;
 let paused = false;
+let ultimateUsed = false;
 let turn = "boss";
-let jinwooX = 280, jinwooY = 150;
+let jinwooX = 300,
+  jinwooY = 150;
 let keys = {};
 const speed = 3.5;
+
 const box = document.getElementById("battleBox");
 const jinwoo = document.getElementById("jinwoo");
 const msg = document.getElementById("msg");
@@ -150,24 +247,24 @@ const attackBtn = document.getElementById("attackBtn");
 const flash = document.getElementById("flash");
 const cutscene = document.getElementById("cutscene");
 
-/* ===== 초기 ===== */
+/* ===== 초기 설정 ===== */
 updateUI();
 msg.textContent = `현재 직업: ${job} (❤️${jinwooHP}, ⚔️${atkPower})`;
 setTimeout(startBossTurn, 3000);
 spawnOrbs();
 
 /* ===== 이동 ===== */
-document.addEventListener("keydown", e => keys[e.key.toLowerCase()] = true);
-document.addEventListener("keyup", e => keys[e.key.toLowerCase()] = false);
+document.addEventListener("keydown", (e) => (keys[e.key.toLowerCase()] = true));
+document.addEventListener("keyup", (e) => (keys[e.key.toLowerCase()] = false));
 
-function moveLoop(){
-  if (!paused && turn === "boss"){
+function moveLoop() {
+  if (!paused && turn === "boss") {
     if (keys["w"]) jinwooY -= speed;
     if (keys["s"]) jinwooY += speed;
     if (keys["a"]) jinwooX -= speed;
     if (keys["d"]) jinwooX += speed;
-    jinwooX = Math.max(0, Math.min(560, jinwooX));
-    jinwooY = Math.max(0, Math.min(310, jinwooY));
+    jinwooX = Math.max(0, Math.min(610, jinwooX));
+    jinwooY = Math.max(0, Math.min(340, jinwooY));
     jinwoo.style.left = jinwooX + "px";
     jinwoo.style.top = jinwooY + "px";
   }
@@ -176,36 +273,41 @@ function moveLoop(){
 }
 moveLoop();
 
-/* ===== 구체 스폰 ===== */
-function spawnOrbs(){
-  setInterval(()=>{
+/* ===== 오브 생성 ===== */
+function spawnOrbs() {
+  setInterval(() => {
     if (paused) return;
-    const r = Math.random();
-    let type = "green";
-    if (r < 0.01) type = "yellow"; // 1% 확률
-    createOrb(type);
-  }, 4000);
+
+    // 초록 오브 30% 확률
+    if (Math.random() < 0.3) createOrb("green");
+
+    // 체력 1일 때 노란 오브 1회 등장
+    if (jinwooHP === 1 && !ultimateUsed) {
+      ultimateUsed = true;
+      setTimeout(() => createOrb("yellow"), 500);
+    }
+  }, 3000);
 }
 
-function createOrb(type){
+function createOrb(type) {
   const orb = document.createElement("div");
   orb.className = `orb ${type}`;
-  orb.style.left = Math.random()*560 + "px";
-  orb.style.top = Math.random()*300 + "px";
+  orb.style.left = Math.random() * 620 + "px";
+  orb.style.top = Math.random() * 320 + "px";
   box.appendChild(orb);
-  setTimeout(()=>orb.remove(), 7000);
+  setTimeout(() => orb.remove(), 7000);
 }
 
-/* ===== 구체 충돌 ===== */
-function checkOrbCollisions(){
+/* ===== 충돌 ===== */
+function checkOrbCollisions() {
   const orbs = document.querySelectorAll(".orb");
-  orbs.forEach(orb=>{
-    if (collide(jinwoo, orb)){
-      if (orb.classList.contains("green")){
+  orbs.forEach((orb) => {
+    if (collide(jinwoo, orb)) {
+      if (orb.classList.contains("green")) {
         jinwooHP++;
         updateUI();
         orb.remove();
-      } else if (orb.classList.contains("yellow")){
+      } else if (orb.classList.contains("yellow")) {
         orb.remove();
         ultimateCutscene();
       }
@@ -214,36 +316,30 @@ function checkOrbCollisions(){
 }
 
 /* ===== 궁극기 컷씬 ===== */
-function ultimateCutscene(){
+function ultimateCutscene() {
   paused = true;
   cutscene.style.opacity = 1;
-  cutscene.style.pointerEvents = "auto";
   cutscene.textContent = "⚡ 진우의 궁극기 발동 ⚡";
-  jinwoo.style.boxShadow = "0 0 100px #ffff66";
-  setTimeout(()=>{
-    cutscene.textContent = "빛이 폭발한다...";
-  }, 1500);
-  setTimeout(()=>{
+  jinwoo.style.boxShadow = "0 0 80px #ffff00";
+
+  setTimeout(() => (cutscene.textContent = "진우의 에너지가 폭발한다..."), 1000);
+  setTimeout(() => (cutscene.textContent = "빛의 파동이 동휘를 덮친다! 💥"), 2500);
+
+  setTimeout(() => {
+    bossHP -= 300;
+    updateUI();
     cutscene.style.opacity = 0;
     paused = false;
-    bossHP -= 300;
     msg.textContent = "궁극기! 💥 300 데미지!";
-    updateUI();
     if (bossHP <= 0) {
-      msg.textContent = "동휘: ...이럴수가...";
-      setTimeout(()=>window.location.href="jinwo24.html",2500);
+      msg.textContent = "동휘: ...말도 안돼...";
+      setTimeout(() => (window.location.href = "jinwo24.html"), 2500);
     }
-  }, 3500);
-}
-
-/* ===== UI ===== */
-function updateUI(){
-  bossHPtxt.textContent = `보스 HP: ${bossHP}`;
-  hearts.innerHTML = "❤️".repeat(jinwooHP);
+  }, 4000);
 }
 
 /* ===== 보스 공격 ===== */
-function startBossTurn(){
+function startBossTurn() {
   turn = "boss";
   msg.textContent = "동휘의 공격!";
   attackBtn.style.display = "none";
@@ -252,83 +348,83 @@ function startBossTurn(){
   else pattern_MultiRed();
 }
 
-/* ===== 공격패턴 ===== */
-function pattern_Ddoong(){
+/* ===== 공격 패턴 ===== */
+function pattern_Ddoong() {
   if (paused) return;
   const boxRect = box.getBoundingClientRect();
-  for (let i=0;i<5;i++){
-    setTimeout(()=>{
+  for (let i = 0; i < 5; i++) {
+    setTimeout(() => {
       const atk = document.createElement("div");
       atk.className = "attack ddoong";
-      atk.style.left = (boxRect.left - 100) + "px";
-      atk.style.top = (boxRect.top + Math.random()*300) + "px";
+      atk.style.left = boxRect.left - 100 + "px";
+      atk.style.top = boxRect.top + Math.random() * 300 + "px";
       document.body.appendChild(atk);
       let x = boxRect.left - 100;
-      const move = setInterval(()=>{
+      const move = setInterval(() => {
         if (paused) return;
         x += 12;
         atk.style.left = x + "px";
-        if (collide(jinwoo, atk) && !invincible){
+        if (collide(jinwoo, atk) && !invincible) {
           hitPlayer();
           atk.remove();
           clearInterval(move);
         }
-        if (x > boxRect.right + 100){
+        if (x > boxRect.right + 100) {
           atk.remove();
           clearInterval(move);
         }
-      },40);
-    }, i*400);
+      }, 40);
+    }, i * 400);
   }
   setTimeout(nextTurn, 3000);
 }
 
-function pattern_MultiRed(){
+function pattern_MultiRed() {
   if (paused) return;
   const boxRect = box.getBoundingClientRect();
-  for (let i=0;i<15;i++){
-    setTimeout(()=>{
+  for (let i = 0; i < 15; i++) {
+    setTimeout(() => {
       const atk = document.createElement("div");
       atk.className = "attack";
-      atk.style.left = (boxRect.left + Math.random()*550) + "px";
-      atk.style.top = (boxRect.top - 80) + "px";
+      atk.style.left = boxRect.left + Math.random() * 600 + "px";
+      atk.style.top = boxRect.top - 80 + "px";
       document.body.appendChild(atk);
       let y = boxRect.top - 80;
-      const fall = setInterval(()=>{
+      const fall = setInterval(() => {
         if (paused) return;
         y += 8;
         atk.style.top = y + "px";
-        if (collide(jinwoo, atk) && !invincible){
+        if (collide(jinwoo, atk) && !invincible) {
           hitPlayer();
           atk.remove();
           clearInterval(fall);
         }
-        if (y > boxRect.bottom + 50){
+        if (y > boxRect.bottom + 50) {
           atk.remove();
           clearInterval(fall);
         }
-      },40);
-    }, i*200);
+      }, 40);
+    }, i * 200);
   }
   setTimeout(nextTurn, 4000);
 }
 
 /* ===== 피격 ===== */
-function hitPlayer(){
-  if (invincible || paused) return;
+function hitPlayer() {
+  if (paused) return;
   jinwooHP--;
   updateUI();
   flash.style.opacity = 1;
-  setTimeout(()=>flash.style.opacity=0,200);
-  if (jinwooHP <= 0){
+  setTimeout(() => (flash.style.opacity = 0), 200);
+  if (jinwooHP <= 0) {
     msg.textContent = "진우는 졌다...";
-    setTimeout(()=>window.location.href="index.html",2500);
+    setTimeout(() => (window.location.href = "board.html"), 2500);
   }
 }
 
 /* ===== 턴 전환 ===== */
-function nextTurn(){
-  if (jinwooHP>0 && bossHP>0){
+function nextTurn() {
+  if (jinwooHP > 0 && bossHP > 0) {
     msg.textContent = "공격할 기회다!";
     attackBtn.style.display = "block";
     turn = "player";
@@ -336,25 +432,36 @@ function nextTurn(){
 }
 
 /* ===== 공격 버튼 ===== */
-attackBtn.addEventListener("click", ()=>{
-  if (turn!=="player") return;
+attackBtn.addEventListener("click", () => {
+  if (turn !== "player") return;
   attackBtn.style.display = "none";
   msg.textContent = `${job}의 공격!`;
   bossHP -= atkPower;
   updateUI();
-  if (bossHP<=0){
-    msg.textContent = "동휘: ...이럴수가...";
-    setTimeout(()=>window.location.href="jinwo24.html",2500);
+  if (bossHP <= 0) {
+    msg.textContent = "동휘: ...말도 안돼...";
+    setTimeout(() => (window.location.href = "jinwo24.html"), 2500);
   } else {
-    setTimeout(startBossTurn,1500);
+    setTimeout(startBossTurn, 1500);
   }
 });
 
-/* ===== 충돌 ===== */
-function collide(a,b){
+/* ===== 충돌 판정 ===== */
+function collide(a, b) {
   const r1 = a.getBoundingClientRect();
   const r2 = b.getBoundingClientRect();
-  return !(r1.right<r2.left||r1.left>r2.right||r1.bottom<r2.top||r1.top>r2.bottom);
+  return !(
+    r1.right < r2.left ||
+    r1.left > r2.right ||
+    r1.bottom < r2.top ||
+    r1.top > r2.bottom
+  );
+}
+
+/* ===== UI 업데이트 ===== */
+function updateUI() {
+  bossHPtxt.textContent = `보스 HP: ${bossHP}`;
+  hearts.innerHTML = "❤️".repeat(jinwooHP);
 }
 </script>
 </body>
