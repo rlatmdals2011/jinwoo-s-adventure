@@ -318,12 +318,67 @@ function checkOrbCollisions() {
 /* ===== 궁극기 컷씬 ===== */
 function ultimateCutscene() {
   paused = true;
-  cutscene.style.opacity = 1;
-  cutscene.textContent = "⚡ 진우의 궁극기 발동 ⚡";
-  jinwoo.style.boxShadow = "0 0 80px #ffff00";
+  const scene = document.getElementById("cutscene");
+  scene.style.opacity = 1;
+  scene.textContent = "⚡ 진우의 궁극기 발동 ⚡";
+  jinwoo.style.transition = "all 0.4s ease";
+  jinwoo.style.boxShadow = "0 0 100px #ffff00, 0 0 200px #ffaa00";
+  jinwoo.style.background = "radial-gradient(circle, #fff777, #ffaa00)";
 
-  setTimeout(() => (cutscene.textContent = "진우의 에너지가 폭발한다..."), 1000);
-  setTimeout(() => (cutscene.textContent = "빛의 파동이 동휘를 덮친다! 💥"), 2500);
+  // 💫 금빛 입자 생성 함수
+  for (let i = 0; i < 50; i++) {
+    const spark = document.createElement("div");
+    spark.style.position = "fixed";
+    spark.style.width = "6px";
+    spark.style.height = "6px";
+    spark.style.borderRadius = "50%";
+    spark.style.background = "gold";
+    spark.style.left = window.innerWidth / 2 + (Math.random() * 200 - 100) + "px";
+    spark.style.top = window.innerHeight / 2 + (Math.random() * 200 - 100) + "px";
+    spark.style.opacity = "0.9";
+    spark.style.boxShadow = "0 0 20px gold";
+    spark.style.zIndex = "50";
+    document.body.appendChild(spark);
+    const dx = (Math.random() - 0.5) * 6;
+    const dy = (Math.random() - 0.5) * 6;
+    let life = 0;
+    const fly = setInterval(() => {
+      life++;
+      spark.style.left = parseFloat(spark.style.left) + dx + "px";
+      spark.style.top = parseFloat(spark.style.top) + dy + "px";
+      spark.style.opacity = 1 - life / 50;
+      if (life > 50) {
+        clearInterval(fly);
+        spark.remove();
+      }
+    }, 20);
+  }
+
+  // 🎥 카메라 흔들림
+  document.body.style.animation = "shake 0.5s ease 2";
+  const shakeCSS = document.createElement("style");
+  shakeCSS.textContent = `
+    @keyframes shake {
+      0% { transform: translate(0,0); }
+      20% { transform: translate(-10px, 5px); }
+      40% { transform: translate(8px, -5px); }
+      60% { transform: translate(-6px, 8px); }
+      80% { transform: translate(5px, -8px); }
+      100% { transform: translate(0,0); }
+    }`;
+  document.head.appendChild(shakeCSS);
+
+  // 🔥 단계별 컷씬 대사
+  setTimeout(() => (scene.textContent = "진우의 에너지가 폭발한다..."), 1000);
+  setTimeout(() => (scene.textContent = "세상이 흔들린다!!"), 2000);
+  setTimeout(() => (scene.textContent = "빛의 파동이 동휘를 덮친다! 💥"), 3000);
+
+  // 💥 붉은 폭발 플래시
+  setTimeout(() => {
+    flash.style.background = "rgba(255, 50, 0, 0.5)";
+    flash.style.opacity = 1;
+  }, 3200);
+  setTimeout(() => (flash.style.opacity = 0), 3600);
 
   setTimeout(() => {
     bossHP -= 300;
@@ -418,7 +473,7 @@ function hitPlayer() {
   setTimeout(() => (flash.style.opacity = 0), 200);
   if (jinwooHP <= 0) {
     msg.textContent = "진우는 졌다...";
-    setTimeout(() => (window.location.href = "board.html"), 2500);
+    setTimeout(() => (window.location.href = "index.html"), 2500);
   }
 }
 
