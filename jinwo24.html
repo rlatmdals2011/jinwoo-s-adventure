@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>동휘의 어둠 각성</title>
+<style>
+body {
+  margin: 0;
+  overflow: hidden;
+  height: 100vh;
+  background: radial-gradient(circle at center, #000000 50%, #100010 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: "Press Start 2P", monospace;
+  color: white;
+}
+
+/* 동휘 이미지 */
+#donghui {
+  width: 260px;
+  border-radius: 10px;
+  filter: grayscale(100%) brightness(0.7);
+  opacity: 0;
+  box-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
+  transition: all 2s ease;
+}
+
+/* DEATH 글자 */
+#death {
+  color: red;
+  font-size: 2.8rem;
+  text-shadow: 0 0 25px red;
+  opacity: 0;
+  margin-top: 30px;
+  transition: opacity 2s ease;
+}
+
+/* 대사 텍스트 */
+#dialogue {
+  font-size: 1.1rem;
+  margin-top: 50px;
+  color: #ffcccc;
+  opacity: 0;
+  text-shadow: 0 0 15px #ff0000;
+  transition: opacity 1.5s ease;
+}
+
+/* 어둠의 에너지 이펙트 */
+.darkAura {
+  animation: darkPulse 2s infinite alternate ease-in-out;
+  filter: grayscale(0) brightness(1.5) drop-shadow(0 0 40px #660000);
+}
+@keyframes darkPulse {
+  0% {
+    box-shadow: 0 0 20px 10px rgba(255, 0, 0, 0.5);
+    filter: brightness(1) drop-shadow(0 0 30px #aa0000);
+  }
+  100% {
+    box-shadow: 0 0 60px 40px rgba(0, 0, 0, 0.8);
+    filter: brightness(1.5) drop-shadow(0 0 50px #000000);
+  }
+}
+
+/* 화면 붉은 플래시 (2초 유지) */
+.flash {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: red;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10;
+  animation: none;
+}
+
+@keyframes redFlash {
+  0% { opacity: 0; }
+  20% { opacity: 0.8; }
+  50% { opacity: 1; }
+  80% { opacity: 0.8; }
+  100% { opacity: 0; }
+}
+</style>
+</head>
+<body>
+
+<div class="flash" id="flash"></div>
+<img id="donghui" src="imboss.jpg" alt="동휘">
+<div id="death">DEATH</div>
+<div id="dialogue"></div>
+
+<script>
+const donghui = document.getElementById("donghui");
+const death = document.getElementById("death");
+const dialogue = document.getElementById("dialogue");
+const flash = document.getElementById("flash");
+
+function darkScene() {
+  // 1️⃣ 흑백 상태로 등장
+  setTimeout(() => {
+    donghui.style.opacity = 1;
+  }, 500);
+
+  // 2️⃣ 빨간 글씨 "DEATH" 등장
+  setTimeout(() => {
+    death.style.opacity = 1;
+  }, 2500);
+
+  // 3️⃣ 대사
+  setTimeout(() => {
+    death.style.opacity = 0;
+    dialogue.textContent = "난 지지 않았어... 뚱띵아...";
+    dialogue.style.opacity = 1;
+  }, 5500);
+
+  // 4️⃣ 붉은 화면 2초 동안 반짝임 (어둠의 힘 발동)
+  setTimeout(() => {
+    flash.style.animation = "redFlash 2s ease";
+  }, 7000);
+
+  // 5️⃣ 변신
+  setTimeout(() => {
+    donghui.src = "5496.png"; // 어둠동휘
+    donghui.classList.add("darkAura");
+    dialogue.textContent = "하하하... 진정한 어둠의 힘을 보여주지!";
+  }, 9000);
+
+  // 6️⃣ 점점 어두워짐
+  setTimeout(() => {
+    document.body.style.transition = "background 3s ease";
+    document.body.style.background = "radial-gradient(circle at center, #000000 10%, #010005 100%)";
+  }, 10500);
+
+  // 7️⃣ 다음 장면으로 이동
+  setTimeout(() => {
+    window.location.href = "jinwo25.html";
+  }, 12500);
+}
+
+darkScene();
+</script>
+</body>
+</html>
